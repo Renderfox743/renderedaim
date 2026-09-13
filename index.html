@@ -18,6 +18,21 @@
   .hud.active{opacity:1}
   .timebar{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.055);overflow:hidden}
   .timebar-fill{height:100%;width:100%;transform-origin:left center;background:linear-gradient(90deg,#22d3ee,#818cf8 60%,#c084fc);box-shadow:0 0 14px rgba(56,189,248,.85);will-change:transform}
+
+  /* FPS counter */
+  .fps-counter{
+    position:absolute;top:74px;left:30px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    color:var(--muted);
+    display:flex;align-items:baseline;gap:5px;
+    opacity:.7;
+  }
+  .fps-counter b{font-size:16px;color:#fff;font-variant-numeric:tabular-nums}
+  .fps-counter span{font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+  .fps-counter.low b{color:#fbbf24}
+  .fps-counter.crit b{color:#fb7185}
+
   .hud-row{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:22px 30px}
   .hud-block{min-width:110px}
   .hud-block.right{text-align:right}
@@ -42,7 +57,7 @@
   .ammo-count{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:34px;font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;text-shadow:0 2px 10px rgba(0,0,0,.7);transition:color .2s ease}
   .ammo-count .max{font-size:18px;color:var(--muted);margin-left:2px;font-weight:600}
   .ammo-label{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700}
-  .ammo-mags{display:flex;gap:3px;margin-top:2px}
+  .ammo-mags{display:flex;gap:3px;margin-top:2px;flex-wrap:wrap;justify-content:flex-end;max-width:180px}
   .ammo-mag-pip{width:5px;height:11px;border-radius:1.5px;background:rgba(255,255,255,.12)}
   .ammo-mag-pip.full{background:#38bdf8;box-shadow:0 0 5px rgba(56,189,248,.7)}
 
@@ -57,6 +72,7 @@
   .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 40%,rgba(8,11,20,.72),rgba(4,5,9,.94));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s ease;overflow-y:auto;z-index:10}
   .overlay.show{opacity:1;pointer-events:auto}
   .overlay.settings{z-index:15}
+  .overlay.block{z-index:30;background:rgba(4,5,9,.98);backdrop-filter:blur(20px)}
   .panel{width:min(800px,100%);background:linear-gradient(180deg,rgba(21,27,44,.92),rgba(11,15,25,.94));border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:38px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.02),inset 0 1px 0 rgba(255,255,255,.07);transform:translateY(14px) scale(.97);opacity:0;transition:transform .42s cubic-bezier(.2,.9,.3,1.15),opacity .3s ease}
   .overlay.show .panel{transform:translateY(0) scale(1);opacity:1}
 
@@ -115,7 +131,6 @@
   .sound-btn:hover{background:rgba(255,255,255,.1);color:#fff}
   .sound-btn.muted{color:#fb7185;border-color:rgba(251,113,133,.3)}
 
-  /* ===================== SETTINGS PANEL ===================== */
   .settings-panel{width:min(720px,100%);padding:0;display:flex;flex-direction:column;max-height:min(92vh,860px)}
   .settings-head{display:flex;align-items:center;justify-content:space-between;padding:26px 30px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
   .settings-head h2{font-size:20px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
@@ -148,20 +163,14 @@
     cursor: pointer;
     transition: all .16s ease;
   }
-  .setting-row .bind-btn:hover{
-    background: rgba(255,255,255,.1);
-    border-color: rgba(255,255,255,.22);
-  }
+  .setting-row .bind-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22)}
   .setting-row .bind-btn.listening{
     background: rgba(56,189,248,.14);
     border-color: #38bdf8;
     color: #38bdf8;
     animation: bindPulse 1.05s ease-in-out infinite;
   }
-  @keyframes bindPulse{
-    0%,100%{box-shadow: 0 0 0 0 rgba(56,189,248,.55)}
-    50%{box-shadow: 0 0 0 9px rgba(56,189,248,0)}
-  }
+  @keyframes bindPulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.55)}50%{box-shadow:0 0 0 9px rgba(56,189,248,0)}}
 
   input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;outline:none;cursor:pointer}
   input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#6366f1);cursor:pointer;box-shadow:0 0 12px rgba(56,189,248,.7);transition:transform .15s ease}
@@ -181,7 +190,7 @@
   .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07)}
 
   .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
-  .mode-tab{flex:1;min-width:120px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);color:var(--muted);font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
+  .mode-tab{flex:1;min-width:100px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
   .mode-tab:hover{background:rgba(255,255,255,.07);color:#fff}
   .mode-tab.active{background:rgba(56,189,248,.1);border-color:var(--tab-color);color:var(--tab-color);box-shadow:0 0 0 1px var(--tab-color),0 6px 18px -8px var(--tab-color)}
 
@@ -199,7 +208,63 @@
   .mult-display .assist-note{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24;font-weight:700;margin-top:3px;display:none}
   .mult-display.assist-on .assist-note{display:block}
 
+  /* Combined sub-mode checkboxes */
+  .submode-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;
+  }
+  .submode-tile{
+    position:relative;display:flex;align-items:center;gap:10px;
+    padding:11px 14px;border-radius:12px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.075);
+    cursor:pointer;user-select:none;
+    transition:all .16s ease;
+  }
+  .submode-tile:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
+  .submode-tile.on{
+    background:rgba(56,189,248,.07);
+    border-color:rgba(56,189,248,.4);
+    box-shadow:0 0 0 1px rgba(56,189,248,.35);
+  }
+  .submode-tile input{display:none}
+  .submode-check{
+    flex:0 0 18px;width:18px;height:18px;border-radius:5px;
+    border:1.5px solid rgba(255,255,255,.25);
+    display:grid;place-items:center;
+    transition:all .16s ease;
+  }
+  .submode-tile.on .submode-check{
+    background:linear-gradient(135deg,#22d3ee,#6366f1);
+    border-color:transparent;
+    box-shadow:0 0 10px rgba(56,189,248,.7);
+  }
+  .submode-check svg{opacity:0;transition:opacity .12s ease}
+  .submode-tile.on .submode-check svg{opacity:1}
+  .submode-name{font-size:12px;font-weight:700;letter-spacing:.02em;color:#dfe6f5}
+  .submode-tile.on .submode-name{color:#fff}
+
   .settings-foot{display:flex;gap:10px;justify-content:space-between;padding:18px 30px 26px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+
+  /* Mobile block */
+  .block-panel{width:min(520px,100%);text-align:center}
+  .block-icon{
+    width:64px;height:64px;margin:0 auto 20px;border-radius:20px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,#fb7185,#f97316);
+    box-shadow:0 14px 40px -10px rgba(251,113,133,.9);
+  }
+  .block-icon svg{width:32px;height:32px;color:#fff}
+  .block-panel h2{font-size:22px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+  .block-panel p{font-size:13.5px;line-height:1.65;color:var(--muted);margin-bottom:10px}
+  .block-panel .block-reasons{
+    text-align:left;display:inline-block;
+    padding:14px 20px;border-radius:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    margin:14px auto 22px;
+    font-size:12px;line-height:1.9;color:#cfd8ea;
+  }
+  .block-panel .block-reasons b{color:#fff;font-weight:700}
 
   @media (max-width:640px){
     .panel{padding:26px 20px;border-radius:20px}
@@ -214,6 +279,8 @@
     .hud-stats{bottom:14px;gap:6px}
     .sound-btn{bottom:14px;right:14px;width:38px;height:38px}
     .grade{font-size:60px}
+    .fps-counter{top:58px;left:18px;font-size:10px}
+    .fps-counter b{font-size:13px}
     .ammo-hud{bottom:64px;right:18px}
     .ammo-count{font-size:26px}
     .reload-bar,.reload-text{right:18px;width:140px;bottom:46px}
@@ -228,6 +295,7 @@
     .btn{padding:13px 20px;font-size:13px}
     .btn.primary{padding:13px 30px}
     .row{gap:8px}
+    .submode-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -238,6 +306,7 @@
 
   <div class="hud" id="hud">
     <div class="timebar"><div class="timebar-fill" id="timebarFill"></div></div>
+    <div class="fps-counter" id="fpsCounter"><b>60</b><span>FPS</span></div>
     <div class="hud-row">
       <div class="hud-block"><div class="hud-label">Mode</div><div class="hud-value" id="hudMode">Gridshot</div></div>
       <div class="hud-block right"><div class="hud-label">Score</div><div class="hud-value big" id="hudScore">0</div></div>
@@ -273,7 +342,32 @@
     </svg>
   </button>
 
-  <div class="overlay show" id="menu">
+  <!-- ============ MOBILE BLOCK ============ -->
+  <div class="overlay block" id="mobileBlock">
+    <div class="panel block-panel">
+      <div class="block-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="5" y="2" width="14" height="20" rx="2"/>
+          <line x1="12" y1="18" x2="12" y2="18"/>
+        </svg>
+      </div>
+      <h2 id="blockTitle">Mouse & Keyboard Required</h2>
+      <p id="blockMsg">This aim trainer is built for desktop play with a real mouse. Touch input cannot replicate the precision needed to train properly.</p>
+      <div class="block-reasons">
+        <b>•</b> Touch has pixel-perfect precision, so it bypasses the skill<br/>
+        <b>•</b> No pointer lock means sensitivity settings don't apply<br/>
+        <b>•</b> Right-click scoping and Shift-ADS are impossible<br/>
+        <b>•</b> Aim assist cannot be trained without a mouse
+      </div>
+      <p style="font-size:12px;opacity:.7">Please use a computer. If you're already on desktop and see this by mistake, click below.</p>
+      <div class="row" style="margin-top:18px">
+        <button class="btn" id="blockBypass">I'm on Desktop — Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN MENU ============ -->
+  <div class="overlay" id="menu">
     <div class="panel">
       <div class="brand">
         <div class="brand-mark">
@@ -303,7 +397,7 @@
       </div>
 
       <div class="hint">
-        <kbd>1</kbd>–<kbd>4</kbd> modes &nbsp;·&nbsp; <kbd>Space</kbd> start &nbsp;·&nbsp; <kbd>R</kbd> restart / reload &nbsp;·&nbsp; <kbd>Esc</kbd> menu &nbsp;·&nbsp; <kbd>M</kbd> mute<br/>
+        <kbd>1</kbd>–<kbd>5</kbd> modes &nbsp;·&nbsp; <kbd>Space</kbd> start &nbsp;·&nbsp; <kbd>R</kbd> restart / reload &nbsp;·&nbsp; <kbd>Esc</kbd> menu &nbsp;·&nbsp; <kbd>M</kbd> mute<br/>
         Sniper: <b>right-click</b> / <kbd>Shift</kbd> to scope &nbsp;·&nbsp; Tracking: hold shoot to lock, <b>right-click</b> for reflex sight
       </div>
     </div>
@@ -332,7 +426,13 @@
         </div>
 
         <div class="setting-row">
-          <div class="setting-label">Aim Assist<small>Glides cursor toward targets when scoped. Heavily penalizes score.</small></div>
+          <div class="setting-label">Frame Rate Cap<small>Limits render loop — 0 = unlimited</small></div>
+          <input type="range" id="fpsSlider" min="0" max="240" step="5" value="0">
+          <div class="setting-value" id="fpsVal">∞</div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">Aim Assist<small>Glides cursor toward targets when scoped. Penalizes score.</small></div>
           <label class="switch assist"><input type="checkbox" id="aimAssistToggle"><span></span></label>
           <div class="setting-value"></div>
         </div>
@@ -370,10 +470,17 @@
           <div class="setting-value"></div>
         </div>
 
+        <!-- Combined sub-mode section (only visible when Combined tab active) -->
+        <div id="submodeSection" style="display:none">
+          <div class="divider">Combined — Sub-Modes</div>
+          <div class="preset-label" style="margin-bottom:10px">Pick which target types to mix</div>
+          <div class="submode-grid" id="submodeGrid"></div>
+        </div>
+
         <div class="mult-display" id="multDisplay">
           <div>
             <span>Score Multiplier</span>
-            <div class="assist-note">Aim assist active · ×0.30 penalty</div>
+            <div class="assist-note">Aim assist active · ×0.55 penalty</div>
           </div>
           <b id="scoreMultVal">×1.00</b>
         </div>
@@ -407,6 +514,66 @@
   "use strict";
 
   /* =========================================================
+     MOBILE DETECTION
+     ========================================================= */
+  function detectMobile() {
+    const ua = navigator.userAgent || "";
+    const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet|PlayBook|Silk/i.test(ua);
+    const touchHeavy = (navigator.maxTouchPoints || 0) > 1
+                    && !window.matchMedia("(pointer: fine)").matches;
+    const smallScreen = Math.min(window.screen.width, window.screen.height) < 600
+                     && (navigator.maxTouchPoints || 0) > 0;
+    return mobileUA || touchHeavy || smallScreen;
+  }
+
+  const mobileBlockEl = document.getElementById("mobileBlock");
+  const blockTitle    = document.getElementById("blockTitle");
+  const blockMsg      = document.getElementById("blockMsg");
+  const blockBypass   = document.getElementById("blockBypass");
+
+  let mobileBypass = false;
+  let mobileDetected = false;
+
+  function showMobileBlock(title, msg) {
+    blockTitle.textContent = title || "Mouse & Keyboard Required";
+    blockMsg.textContent = msg || "This aim trainer is built for desktop play with a real mouse. Touch input cannot replicate the precision needed to train properly.";
+    mobileBlockEl.classList.add("show");
+    menuEl.classList.remove("show");
+    settingsEl.classList.remove("show");
+    resultsEl.classList.remove("show");
+    hud.classList.remove("active");
+  }
+
+  function hideMobileBlock() {
+    mobileBlockEl.classList.remove("show");
+  }
+
+  blockBypass.addEventListener("click", () => {
+    mobileBypass = true;
+    hideMobileBlock();
+    menuEl.classList.add("show");
+    startTouchWatch();
+  });
+
+  // Detect zero-real-mouse-movement during play
+  let realMouseEvents = 0;
+  let touchWatchActive = false;
+  let playStartTime = 0;
+
+  function startTouchWatch() {
+    touchWatchActive = true;
+    realMouseEvents = 0;
+    playStartTime = performance.now();
+  }
+
+  function isTouchOnlyKick() {
+    if (!touchWatchActive) return false;
+    if (realMouseEvents >= 3) return false;      // clearly a real mouse
+    if (performance.now() - playStartTime < 3000) return false; // grace period
+    return true;
+  }
+
+  /* =========================================================
      PRESETS
      ========================================================= */
   const PRESETS = {
@@ -423,24 +590,27 @@
   const MODES = {
     gridshot: {
       id:"gridshot", name:"Gridshot",
-      desc:"Six targets on screen. Clear them as fast as you can.",
+      desc:"Six targets, enforced min distance from your cursor.",
       meta:"60s · 6 targets · sniper",
       duration:60, maxTargets:6, radius:44, points:100,
       color:"#22d3ee", color2:"#0891b2", par:9000, weapon:"sniper",
+      minFromMouse: 180,
     },
     flick: {
       id:"flick", name:"Flick",
-      desc:"One target at a time, spawned far away. Snap to it.",
+      desc:"Single target at random angles and distances.",
       meta:"60s · single target · sniper",
       duration:60, maxTargets:1, radius:38, points:150,
       color:"#fb7185", color2:"#be123c", par:11500, weapon:"sniper",
+      angleSpawn: true,
     },
     precision: {
       id:"precision", name:"Precision",
-      desc:"Tiny targets that expire fast. Make every shot count.",
+      desc:"Tiny targets, unpredictable lifetimes. Every shot counts.",
       meta:"45s · small & fast · sniper",
       duration:45, maxTargets:1, radius:20, points:260,
       color:"#fbbf24", color2:"#d97706", par:9500, weapon:"sniper",
+      variableLife: true,
     },
     tracking: {
       id:"tracking", name:"Tracking",
@@ -451,8 +621,16 @@
       color:"#a78bfa", color2:"#6d28d9", par:4200, weapon:"ar",
       trackingMode: true,
     },
+    combined: {
+      id:"combined", name:"Combined",
+      desc:"Mix every chosen sub-mode into one run. Sniper only.",
+      meta:"60s · custom mix · sniper",
+      duration:60, maxTargets:4, radius:36, points:130,
+      color:"#f472b6", color2:"#be185d", par:11000, weapon:"sniper",
+      combinedMode: true,
+    },
   };
-  const MODE_ORDER = ["gridshot","flick","precision","tracking"];
+  const MODE_ORDER = ["gridshot","flick","precision","tracking","combined"];
 
   const ICONS = {
     gridshot:`<svg width="19" height="19" viewBox="0 0 20 20" fill="currentColor">
@@ -467,6 +645,11 @@
     tracking:`<svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
       <path d="M1.5 14c2.6 0 3.4-8 6-8s3.4 8 6 8 3.4-8 5-8" opacity=".55"/>
       <circle cx="10" cy="10" r="3.6" fill="currentColor" stroke="none"/></svg>`,
+    combined:`<svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="6" r="3"/>
+      <circle cx="14" cy="14" r="3"/>
+      <path d="M9 9 11 11"/>
+      <path d="M14 6h3M6 14v3"/></svg>`,
   };
 
   /* =========================================================
@@ -477,25 +660,35 @@
     flick:     { hitScale:1.00, moving:false, moveSpeed:1.00, ammo:false },
     precision: { hitScale:1.00, moving:false, moveSpeed:1.00, ammo:false },
     tracking:  { hitScale:1.00, moving:true,  moveSpeed:1.00, ammo:false },
+    combined:  { hitScale:1.00, moving:false, moveSpeed:1.00, ammo:false,
+                 subModes: { gridshot:true, flick:true, precision:true, tracking:true } },
   };
 
   const settings = {
     sensitivity: 1.00,
-    shootKey: "Mouse0",      // "Mouse0"/"Mouse1"/"Mouse2"/... or e.code like "KeyA"
+    shootKey: "Mouse0",
     aimAssist: false,
+    fpsCap: 0,
     modes: JSON.parse(JSON.stringify(DEFAULT_MODE_SETTINGS)),
     currentTab: "gridshot",
   };
 
-  const AIM_ASSIST_PENALTY = 0.30;
+  const AIM_ASSIST_PENALTY = 0.55;
 
-  function modeSettings(modeId) { return settings.modes[modeId]; }
   function isTracking(modeId)   { return !!MODES[modeId].trackingMode; }
+  function isCombined(modeId)   { return !!MODES[modeId].combinedMode; }
 
   function computeScoreMult(modeId) {
     const s = settings.modes[modeId];
     const hitMult = Math.pow(1 / s.hitScale, 0.8);
-    const moveMult = s.moving ? (0.65 + s.moveSpeed * 0.5) : 1;
+    let moveMult = 1;
+    if (isCombined(modeId)) {
+      // Combined always has variety → slight inherent bonus
+      moveMult = 1.15;
+      if (s.moving) moveMult *= 0.65 + s.moveSpeed * 0.5;
+    } else if (s.moving) {
+      moveMult = 0.65 + s.moveSpeed * 0.5;
+    }
     const aimMult = settings.aimAssist ? AIM_ASSIST_PENALTY : 1;
     return hitMult * moveMult * aimMult;
   }
@@ -569,9 +762,7 @@
     return code;
   }
 
-  function isMouseShoot(button) {
-    return settings.shootKey === "Mouse" + button;
-  }
+  function isMouseShoot(button) { return settings.shootKey === "Mouse" + button; }
   function isKeyShoot(e) {
     if (!settings.shootKey) return false;
     if (settings.shootKey.startsWith("Mouse")) return false;
@@ -597,6 +788,7 @@
   const chipMisses   = document.getElementById("chipMisses");
   const chipMissesValue = document.getElementById("chipMissesValue");
   const chipAssist   = document.getElementById("chipAssist");
+  const fpsCounter   = document.getElementById("fpsCounter");
   const menuEl     = document.getElementById("menu");
   const settingsEl = document.getElementById("settings");
   const resultsEl  = document.getElementById("results");
@@ -624,6 +816,8 @@
   const sensSlider     = document.getElementById("sensSlider");
   const sensVal        = document.getElementById("sensVal");
   const shootKeyBtn    = document.getElementById("shootKeyBtn");
+  const fpsSlider      = document.getElementById("fpsSlider");
+  const fpsVal         = document.getElementById("fpsVal");
   const aimAssistToggle= document.getElementById("aimAssistToggle");
   const modeTabs       = document.getElementById("modeTabs");
   const settingsPresetRow = document.getElementById("settingsPresetRow");
@@ -635,6 +829,8 @@
   const moveSpeedSlider= document.getElementById("moveSpeedSlider");
   const moveSpeedVal   = document.getElementById("moveSpeedVal");
   const ammoToggle     = document.getElementById("ammoToggle");
+  const submodeSection = document.getElementById("submodeSection");
+  const submodeGrid    = document.getElementById("submodeGrid");
   const multDisplay    = document.getElementById("multDisplay");
   const scoreMultVal   = document.getElementById("scoreMultVal");
   const settingsClose  = document.getElementById("settingsClose");
@@ -687,13 +883,9 @@
       reloadEnd(){ tone({freq:420,dur:0.06,type:"square",vol:0.12}); tone({freq:600,dur:0.08,type:"square",vol:0.10,delay:0.06}); },
       bindSet(){ tone({freq:880,dur:0.09,type:"sine",vol:0.2}); tone({freq:1320,dur:0.09,type:"sine",vol:0.14,delay:0.07}); },
       bindCancel(){ tone({freq:330,dur:0.1,type:"triangle",vol:0.15,slideTo:220}); },
-      assistLock(){ tone({freq:520,dur:0.07,type:"sine",vol:0.08}); },
     };
   })();
 
-  /* =========================================================
-     WEAPONS
-     ========================================================= */
   const WEAPONS = {
     sniper: { magSize:5,  boltTime:1.10, reloadTime:2.30, tacticalReloadTime:0,    autoReloadDelay:0.35 },
     ar:     { magSize:30, boltTime:0,    reloadTime:1.90, tacticalReloadTime:1.25, autoReloadDelay:-1   },
@@ -773,7 +965,7 @@
     ads:false, adsZoom:1,
     movement: { type:"none", aggression:0 },
     lockedSettings: null,
-    assistTarget: null,     // currently assisted target (for visual)
+    assistTarget: null,
 
     ammo: {
       enabled: false, inMag: 0, magSize: 0,
@@ -795,17 +987,14 @@
     const ls = state.lockedSettings;
     const w = WEAPONS[MODES[state.mode].weapon];
     const a = state.ammo;
-
     a.enabled = ls.ammo;
     a.magSize = w.magSize;
     a.inMag = ls.ammo ? w.magSize : Infinity;
     a.reloading = false; a.reloadTime = 0; a.reloadDuration = 0; a.isTactical = false;
     a.shotCooldown = 0; a.autoReloadTimer = -1;
     a.shotsFired = 0; a.reloads = 0; a.emptyClicks = 0;
-
     updateAmmoHUD();
   }
-
   function beginReload(tactical){
     const a = state.ammo;
     if (!a.enabled || a.reloading) return;
@@ -822,7 +1011,6 @@
     state.ads = false;
     SFX.reloadStart();
   }
-
   function finishReload(){
     const a = state.ammo;
     a.reloading = false;
@@ -832,7 +1020,6 @@
     SFX.reloadEnd();
     updateAmmoHUD();
   }
-
   function consumeAmmo(){
     const a = state.ammo;
     if (!a.enabled) return true;
@@ -855,7 +1042,7 @@
      TARGET
      ========================================================= */
   class Target {
-    constructor(cfg, x, y, r, life, movement){
+    constructor(cfg, x, y, r, life, movement, style){
       this.cfg = cfg;
       this.x=x; this.y=y; this.r=r; this.maxR=r;
       this.life = life || 0;
@@ -864,6 +1051,9 @@
       this.pulse = Math.random() * Math.PI * 2;
       this.expired = false; this.locked = false; this.hitFlash = 0;
       this.assisted = false;
+
+      // Combined-mode style tag (which sub-mode this target belongs to)
+      this.style = style || "default";
 
       this.movement = movement || { type:"none", aggression:0 };
       this.moving = this.movement.type !== "none";
@@ -1023,44 +1213,144 @@
   }
 
   /* =========================================================
-     SPAWN
+     SPAWN — with min-from-mouse + angle-spawn + variable life
      ========================================================= */
-  function randomPos(r, awayFromMouse){
+  function randomPos(r, awayFromMouse, minFromMouse){
     const pad = r + 26;
     const minX = pad, maxX = Math.max(pad+1, W-pad);
     const minY = pad, maxY = Math.max(pad+1, H-pad);
+
+    const minR = Math.max(0, minFromMouse || 0);
+
     let best = { x: W/2, y: H/2 }, bestScore = -Infinity;
-    for (let i=0;i<34;i++){
+    for (let i=0;i<44;i++){
       const x = minX + Math.random()*(maxX-minX);
       const y = minY + Math.random()*(maxY-minY);
+
+      // Hard reject if inside min distance from cursor
+      if (minR > 0){
+        const md = Math.hypot(mouse.x - x, mouse.y - y);
+        if (md < minR) continue;
+      }
+
       let minD = Infinity;
       for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-x, t.y-y) - t.r - r);
       if (!isFinite(minD)) minD = 2000;
+
       let s = minD;
-      if (awayFromMouse) s = Math.min(s, Math.hypot(mouse.x-x, mouse.y-y) * 0.9);
+      if (awayFromMouse) s = Math.min(s, Math.hypot(mouse.x-x, mouse.y-y) * 0.45); // weaker bias
       s += Math.random()*8;
       if (s > bestScore){ bestScore = s; best = {x,y}; }
     }
     return best;
   }
 
+  // Angle-based position for Flick: pick angle, place at max distance
+  function angleSpawnPos(r){
+    const pad = r + 30;
+    const cx = W/2, cy = H/2;
+    const maxDist = Math.min(W, H) * 0.42;
+
+    for (let i=0;i<20;i++){
+      const ang = Math.random() * Math.PI * 2;
+      const dist = maxDist * (0.55 + Math.random() * 0.45);
+      const x = clamp(cx + Math.cos(ang) * dist, pad, W - pad);
+      const y = clamp(cy + Math.sin(ang) * dist, pad, H - pad);
+
+      // Reject close to mouse
+      if (Math.hypot(mouse.x - x, mouse.y - y) < 200) continue;
+
+      let minD = Infinity;
+      for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-x, t.y-y) - t.r - r);
+      if (minD > r * 1.2) return { x, y };
+    }
+    return randomPos(r, true, 200);
+  }
+
   function spawnTargets(){
     const cfg = MODES[state.mode];
     const move = state.movement;
+    const s = state.lockedSettings;
+
     if (cfg.trackingMode){
       if (state.targets.length < 1){
         const r = cfg.radius;
-        const p = randomPos(r, false);
-        state.targets.push(new Target(cfg, p.x, p.y, r, 0, move));
+        const p = randomPos(r, false, 0);
+        state.targets.push(new Target(cfg, p.x, p.y, r, 0, move, "tracking"));
       }
       return;
     }
+
+    // Combined mode: per-slot sub-mode
+    if (cfg.combinedMode){
+      const activeSubs = s.subModes || { gridshot:true, flick:true, precision:true, tracking:true };
+      const pool = [];
+      if (activeSubs.gridshot)  pool.push("gridshot");
+      if (activeSubs.flick)     pool.push("flick");
+      if (activeSubs.precision) pool.push("precision");
+      if (activeSubs.tracking)  pool.push("tracking");
+      if (pool.length === 0) pool.push("gridshot");
+
+      let guard = 0;
+      while (state.targets.length < cfg.maxTargets && guard++ < 20){
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        let r, life, moveProf, minFromMouse = 0, useAngle = false;
+
+        if (pick === "gridshot"){
+          r = 44; life = 0; moveProf = { type:"none", aggression:0 };
+          minFromMouse = 180;
+        } else if (pick === "flick"){
+          r = 38; life = 0; moveProf = { type:"none", aggression:0 };
+          useAngle = true;
+        } else if (pick === "precision"){
+          r = 20 * (0.85 + Math.random()*0.32);
+          life = 1.6 + Math.random()*1.1;  // unpredictable
+          moveProf = { type:"none", aggression:0 };
+        } else if (pick === "tracking"){
+          r = 50;
+          life = 0;
+          moveProf = { type:"orbital", aggression: state.lockedSettings.moveSpeed || 0.9 };
+        }
+
+        // If the user has "moving" enabled in combined, override moveProf
+        if (s.moving && pick !== "tracking"){
+          moveProf = { type:"strafe", aggression: s.moveSpeed };
+        }
+
+        const p = useAngle ? angleSpawnPos(r) : randomPos(r, false, minFromMouse);
+
+        // Ensure no overlap
+        let tooClose = false;
+        for (const t of state.targets) if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 4) tooClose = true;
+        if (tooClose) continue;
+
+        state.targets.push(new Target(cfg, p.x, p.y, r, life, moveProf, pick));
+      }
+      return;
+    }
+
+    // Standard modes
     let guard = 0;
-    while (state.targets.length < cfg.maxTargets && guard++ < 14){
-      const r = cfg.id === "precision" ? cfg.radius * (0.85 + Math.random()*0.32) : cfg.radius;
-      const p = randomPos(r, cfg.maxTargets === 1);
-      const life = cfg.id === "precision" ? 2.1 + Math.random()*0.9 : 0;
-      state.targets.push(new Target(cfg, p.x, p.y, r, life, move));
+    while (state.targets.length < cfg.maxTargets && guard++ < 18){
+      let r, life = 0, p;
+
+      if (cfg.id === "precision"){
+        r = cfg.radius * (0.85 + Math.random()*0.32);
+        // Unpredictable lifetime — much shorter and highly variable
+        life = 1.4 + Math.random() * 1.6;
+        p = randomPos(r, true, 150);
+      } else if (cfg.id === "flick"){
+        r = cfg.radius;
+        p = angleSpawnPos(r);
+      } else if (cfg.id === "gridshot"){
+        r = cfg.radius;
+        p = randomPos(r, false, cfg.minFromMouse);
+      } else {
+        r = cfg.radius;
+        p = randomPos(r, cfg.maxTargets === 1);
+      }
+
+      state.targets.push(new Target(cfg, p.x, p.y, r, life, move, cfg.id));
     }
   }
 
@@ -1073,10 +1363,19 @@
     state.hits++;
     state.streak++;
     if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+
+    // Per-hit points in combined mode reflect the sub-mode difficulty
+    let basePoints = cfg.points;
+    if (cfg.combinedMode){
+      basePoints = t.style === "precision" ? 240
+                 : t.style === "flick"     ? 150
+                 : t.style === "tracking"  ? 120
+                 : 100;
+    }
     if (cfg.id !== "gridshot") state.reactions.push(performance.now() - t.bornAt);
 
     const mult = (1 + Math.min(state.streak-1, 20) * 0.05) * ls.scoreMult;
-    const gained = Math.round(cfg.points * mult);
+    const gained = Math.round(basePoints * mult);
     state.score += gained;
 
     burst(t.x, t.y, cfg.color, t.radius);
@@ -1145,7 +1444,6 @@
     if (!best) return;
 
     state.assistTarget = best;
-    // Gentle glide: ~220ms time constant
     const k = 1 - Math.exp(-4.5 * dt);
     mouse.x += (best.x - mouse.x) * k;
     mouse.y += (best.y - mouse.y) * k;
@@ -1228,6 +1526,7 @@
       ammo: s.ammo,
       scoreMult: computeScoreMult(state.mode),
       aimAssist: settings.aimAssist,
+      subModes: s.subModes ? JSON.parse(JSON.stringify(s.subModes)) : null,
     };
     state.movement = getMovementProfile(state.mode);
 
@@ -1256,8 +1555,12 @@
     resultsEl.classList.remove("show");
     hud.classList.add("active");
 
-    // Show aim assist chip when active
     chipAssist.style.display = state.lockedSettings.aimAssist ? "" : "none";
+
+    // Reset touch-watch state
+    if (mobileBypass){
+      startTouchWatch();
+    }
 
     SFX.init(); SFX.tick(); updateHUD();
     updateAmmoHUD();
@@ -1328,11 +1631,17 @@
     const mult = computeScoreMult(state.mode);
     const parts = [];
     parts.push(`Hitbox <b>${Math.round(s.hitScale*100)}%</b>`);
-    if (isTracking(state.mode) || s.moving){
+
+    if (isCombined(state.mode)){
+      const subs = s.subModes || {};
+      const enabled = ["gridshot","flick","precision","tracking"].filter(k=>subs[k]);
+      parts.push(`Mix: <b>${enabled.length || 0}</b>/4`);
+    } else if (isTracking(state.mode) || s.moving){
       parts.push(`<b>Moving</b> ×${Math.round(s.moveSpeed*100)}%`);
     } else {
       parts.push(`Static`);
     }
+
     if (s.ammo) parts.push(`<b>Ammo ON</b>`);
     if (settings.aimAssist) parts.push(`<b style="color:#fbbf24">Aim Assist</b>`);
     parts.push(`Multiplier <b>×${mult.toFixed(2)}</b>`);
@@ -1379,16 +1688,58 @@
     });
   }
 
+  function buildSubmodeTiles(){
+    submodeGrid.innerHTML = "";
+    const s = settings.modes[settings.currentTab];
+    if (!s.subModes) return;
+
+    const items = [
+      { id:"gridshot",  name:"Gridshot"  },
+      { id:"flick",     name:"Flick"     },
+      { id:"precision", name:"Precision" },
+      { id:"tracking",  name:"Tracking"  },
+    ];
+
+    items.forEach(it => {
+      const tile = document.createElement("label");
+      tile.className = "submode-tile" + (s.subModes[it.id] ? " on" : "");
+      tile.dataset.sub = it.id;
+      tile.innerHTML = `
+        <div class="submode-check">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="submode-name">${it.name}</div>
+        <input type="checkbox" ${s.subModes[it.id] ? "checked" : ""}>
+      `;
+      tile.addEventListener("click", (e) => {
+        e.preventDefault();
+        s.subModes[it.id] = !s.subModes[it.id];
+        tile.classList.toggle("on", s.subModes[it.id]);
+        const cb = tile.querySelector("input");
+        if (cb) cb.checked = s.subModes[it.id];
+        updateDiffHint();
+        refreshSettingsUI();
+      });
+      submodeGrid.appendChild(tile);
+    });
+  }
+
   function refreshSettingsUI(){
     const modeId = settings.currentTab;
     const s = settings.modes[modeId];
     const isTrack = isTracking(modeId);
+    const isComb = isCombined(modeId);
 
     sensSlider.value = settings.sensitivity;
     sensVal.textContent = settings.sensitivity.toFixed(2) + "×";
 
     shootKeyBtn.textContent = keyLabel(settings.shootKey);
     shootKeyBtn.classList.toggle("listening", listeningForBind);
+
+    fpsSlider.value = settings.fpsCap;
+    fpsVal.textContent = settings.fpsCap === 0 ? "∞" : settings.fpsCap + "";
 
     aimAssistToggle.checked = settings.aimAssist;
 
@@ -1403,6 +1754,10 @@
     moveSpeedRow.classList.toggle("disabled", !(isTrack || s.moving));
 
     ammoToggle.checked = s.ammo;
+
+    // Sub-mode section visibility
+    submodeSection.style.display = isComb ? "" : "none";
+    if (isComb) buildSubmodeTiles();
 
     scoreMultVal.textContent = "×" + computeScoreMult(modeId).toFixed(2);
     multDisplay.classList.toggle("assist-on", settings.aimAssist);
@@ -1440,17 +1795,14 @@
   }
 
   shootKeyBtn.addEventListener("click", (e)=>{
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     if (listeningForBind) cancelBind();
     else startBind();
   });
 
-  // Global capture for binding
   document.addEventListener("keydown", (e)=>{
     if (!listeningForBind) return;
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     if (e.key === "Escape"){ cancelBind(); return; }
     finishBind(e.code || e.key);
   }, true);
@@ -1458,8 +1810,7 @@
   document.addEventListener("pointerdown", (e)=>{
     if (!listeningForBind) return;
     if (isBindButtonTarget(e.target)) return;
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     finishBind("Mouse" + e.button);
   }, true);
 
@@ -1467,10 +1818,14 @@
     if (listeningForBind){ e.preventDefault(); e.stopPropagation(); }
   }, true);
 
-  /* ---- Other settings listeners ---- */
   sensSlider.addEventListener("input", () => {
     settings.sensitivity = parseFloat(sensSlider.value);
     sensVal.textContent = settings.sensitivity.toFixed(2) + "×";
+  });
+
+  fpsSlider.addEventListener("input", () => {
+    settings.fpsCap = parseInt(fpsSlider.value, 10) || 0;
+    fpsVal.textContent = settings.fpsCap === 0 ? "∞" : settings.fpsCap + "";
   });
 
   aimAssistToggle.addEventListener("change", () => {
@@ -1697,7 +2052,6 @@
     const vDecay = Math.exp(-9 * dt);
     mouseVel.x *= vDecay; mouseVel.y *= vDecay;
 
-    // Aim assist BEFORE gun angle so the gun follows the assisted cursor
     updateAimAssist(dt);
 
     const isSniper = MODES[state.mode].weapon === "sniper";
@@ -1737,6 +2091,19 @@
     }
     if (state.phase !== "playing") return;
 
+    // Mobile-bypass touch detection
+    if (mobileBypass && touchWatchActive && isTouchOnlyKick()){
+      touchWatchActive = false;
+      state.phase = "menu";
+      hud.classList.remove("active");
+      releaseLock();
+      showMobileBlock(
+        "Touch Input Detected",
+        "We detected no real mouse movement during your session. This trainer requires a mouse for meaningful practice."
+      );
+      return;
+    }
+
     state.timeLeft -= dt;
     if (state.timeLeft <= 0){ state.timeLeft = 0; updateHUD(); endGame(); return; }
 
@@ -1774,12 +2141,25 @@
     }
   }
 
+  // Per-sub-mode color in combined
+  function targetColors(t){
+    if (t.cfg.combinedMode){
+      switch (t.style){
+        case "gridshot":  return { col:"#22d3ee", col2:"#0891b2" };
+        case "flick":     return { col:"#fb7185", col2:"#be123c" };
+        case "precision": return { col:"#fbbf24", col2:"#d97706" };
+        case "tracking":  return { col:"#a78bfa", col2:"#6d28d9" };
+      }
+    }
+    return { col:t.cfg.color, col2:t.cfg.color2 };
+  }
+
   function drawTarget(t){
     const R = t.radius;
     if (R <= 0.6) return;
     const cfg = t.cfg;
     const ls = state.lockedSettings;
-    const col = cfg.color, col2 = cfg.color2;
+    const { col, col2 } = targetColors(t);
 
     drawTrail(t);
     ctx.save();
@@ -1793,7 +2173,6 @@
     ctx.arc(0,0,R*2.3,0,Math.PI*2);
     ctx.fill();
 
-    // Aim assist highlight ring
     if (t === state.assistTarget){
       ctx.save();
       ctx.setLineDash([3,4]);
@@ -1825,7 +2204,7 @@
         ctx.strokeStyle = "rgba(255,255,255,0.12)";
         ctx.beginPath(); ctx.arc(0,0,ringR,0,Math.PI*2); ctx.stroke();
 
-        const lockCol = lf > 0.85 ? "#4ade80" : cfg.color;
+        const lockCol = lf > 0.85 ? "#4ade80" : col;
         ctx.strokeStyle = lockCol;
         ctx.lineCap = "round";
         ctx.lineWidth = 4;
@@ -1998,9 +2377,6 @@
     ctx.restore();
   }
 
-  /* =========================================================
-     WEAPONS
-     ========================================================= */
   function drawSniperBody(){
     const dark="#161b22", mid="#252d38", light="#39424f", accent="#4a5766";
     ctx.fillStyle = mid;
@@ -2040,7 +2416,6 @@
     ctx.moveTo(4, 12); ctx.lineTo(18, 12);
     ctx.lineTo(20, 26); ctx.lineTo(6, 26);
     ctx.closePath(); ctx.fill();
-
     if (state.ammo.enabled && state.ammo.shotCooldown > 0 && MODES[state.mode].weapon === "sniper"){
       const k = state.ammo.shotCooldown / WEAPONS.sniper.boltTime;
       ctx.fillStyle = "#7a8899";
@@ -2082,7 +2457,6 @@
     ctx.closePath(); ctx.fill();
     ctx.strokeStyle = dark; ctx.lineWidth = 3;
     ctx.beginPath(); ctx.arc(18, 18, 7, 0, Math.PI); ctx.stroke();
-
     if (state.ammo.enabled && state.ammo.reloading && MODES[state.mode].weapon === "ar"){
       const p = 1 - (state.ammo.reloadTime / state.ammo.reloadDuration);
       const dropK = Math.min(1, p / 0.3);
@@ -2178,9 +2552,6 @@
     ctx.restore();
   }
 
-  /* =========================================================
-     SCOPES
-     ========================================================= */
   function drawScope(){
     const z = state.adsZoom;
     if (z <= 1.05) return;
@@ -2248,7 +2619,6 @@
   function drawARScope(z){
     const cx = mouse.x, cy = mouse.y;
     const fade = Math.min(1, (z - 1) / 0.3);
-
     ctx.save();
     ctx.globalAlpha = fade;
 
@@ -2405,12 +2775,40 @@
   }
 
   /* =========================================================
-     LOOP
+     LOOP — with FPS cap + counter
      ========================================================= */
   let lastT = performance.now();
+  let lastRenderT = lastT;
+  let fpsAccum = 0;
+  let fpsFrames = 0;
+  let fpsDisplayed = 60;
+
   function frame(now){
+    // FPS cap — skip frames if we're running ahead of schedule
+    if (settings.fpsCap > 0){
+      const minInterval = 1000 / settings.fpsCap;
+      if (now - lastRenderT < minInterval - 0.5){
+        requestAnimationFrame(frame);
+        return;
+      }
+    }
+
     const dt = Math.min((now - lastT) / 1000, 0.05);
     lastT = now;
+    lastRenderT = now;
+
+    // FPS counting
+    fpsFrames++;
+    fpsAccum += dt;
+    if (fpsAccum >= 0.4){
+      fpsDisplayed = Math.round(fpsFrames / fpsAccum);
+      fpsFrames = 0;
+      fpsAccum = 0;
+      fpsCounter.querySelector("b").textContent = fpsDisplayed;
+      fpsCounter.classList.toggle("low", fpsDisplayed < 45 && fpsDisplayed >= 25);
+      fpsCounter.classList.toggle("crit", fpsDisplayed < 25);
+    }
+
     update(dt);
     render();
     requestAnimationFrame(frame);
@@ -2433,6 +2831,12 @@
   });
 
   canvas.addEventListener("pointermove", (e) => {
+    // Count real mouse events for mobile detection
+    if (e.pointerType === "mouse" && e.movementX !== 0 || e.movementY !== 0){
+      realMouseEvents++;
+    }
+    if (e.pointerType === "mouse") realMouseEvents++;
+
     if (pointerLocked){
       const s = settings.sensitivity;
       const dx = e.movementX * s;
@@ -2463,18 +2867,15 @@
       mouse.inside = true;
     }
 
-    // ADS — RMB is always scope, plus Shift key
     if (e.button === 2){
       if (!(state.ammo.enabled && state.ammo.reloading)) state.ads = true;
     }
 
-    // Shoot key
     if (state.phase === "playing" && isMouseShoot(e.button)){
       mouse.down = true;
       const cfg = MODES[state.mode];
       if (!cfg.trackingMode) shoot();
     } else if (state.phase !== "playing" && isMouseShoot(e.button)){
-      // Still set mouse.down for consistency during countdown
       mouse.down = true;
     }
   });
@@ -2492,9 +2893,7 @@
      KEYBOARD
      ========================================================= */
   window.addEventListener("keydown", (e)=>{
-    if (listeningForBind) return;  // capture listener handles it
-
-    // Shoot key from keyboard — only during play
+    if (listeningForBind) return;
     if (state.phase === "playing" && isKeyShoot(e)){
       e.preventDefault();
       mouse.down = true;
@@ -2504,7 +2903,6 @@
       }
       return;
     }
-
     if (e.key === "r" || e.key === "R"){
       if (state.phase === "playing"){
         if (state.ammo.enabled && !state.ammo.reloading) beginReload(true);
@@ -2513,7 +2911,7 @@
       if (state.phase === "results" || state.phase === "countdown") startGame();
       return;
     }
-    if (e.key >= "1" && e.key <= "4"){
+    if (e.key >= "1" && e.key <= "5"){
       const id = MODE_ORDER[parseInt(e.key, 10) - 1];
       if (id){
         selectMode(id);
@@ -2631,7 +3029,15 @@
 
   mouse.x = W/2; mouse.y = H/2;
 
-  requestAnimationFrame((t)=>{ lastT = t; requestAnimationFrame(frame); });
+  // Mobile detect
+  mobileDetected = detectMobile();
+  if (mobileDetected){
+    showMobileBlock();
+    startTouchWatch();
+  }
+
+  requestAnimationFrame((t)=>{ lastT = t; lastRenderTimeInit(t); requestAnimationFrame(frame); });
+  function lastRenderTimeInit(t){ lastRenderT = t; }
 })();
 </script>
 </body>
