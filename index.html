@@ -18,21 +18,16 @@
   .hud.active{opacity:1}
   .timebar{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.055);overflow:hidden}
   .timebar-fill{height:100%;width:100%;transform-origin:left center;background:linear-gradient(90deg,#22d3ee,#818cf8 60%,#c084fc);box-shadow:0 0 14px rgba(56,189,248,.85);will-change:transform}
-
-  /* FPS counter */
   .fps-counter{
     position:absolute;top:74px;left:30px;
     font-family:ui-monospace,Menlo,Consolas,monospace;
-    font-size:11px;font-weight:700;letter-spacing:.08em;
-    color:var(--muted);
-    display:flex;align-items:baseline;gap:5px;
-    opacity:.7;
+    font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);
+    display:flex;align-items:baseline;gap:5px;opacity:.7;
   }
   .fps-counter b{font-size:16px;color:#fff;font-variant-numeric:tabular-nums}
   .fps-counter span{font-size:9px;letter-spacing:.2em;text-transform:uppercase}
   .fps-counter.low b{color:#fbbf24}
   .fps-counter.crit b{color:#fb7185}
-
   .hud-row{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:22px 30px}
   .hud-block{min-width:110px}
   .hud-block.right{text-align:right}
@@ -47,7 +42,7 @@
   .chip b{color:#fff;font-size:14px;font-variant-numeric:tabular-nums;font-weight:700}
   .chip.hidden{display:none}
   .chip.assist b{color:#fbbf24}
-
+  .chip.calib b{color:#4ade80}
   .ammo-hud{position:absolute;bottom:80px;right:32px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;opacity:0;transition:opacity .25s ease;pointer-events:none}
   .ammo-hud.show{opacity:1}
   .ammo-hud.empty .ammo-count{color:#fb7185;animation:ammoPulse .55s ease-in-out infinite}
@@ -60,7 +55,6 @@
   .ammo-mags{display:flex;gap:3px;margin-top:2px;flex-wrap:wrap;justify-content:flex-end;max-width:180px}
   .ammo-mag-pip{width:5px;height:11px;border-radius:1.5px;background:rgba(255,255,255,.12)}
   .ammo-mag-pip.full{background:#38bdf8;box-shadow:0 0 5px rgba(56,189,248,.7)}
-
   .reload-bar{position:absolute;bottom:56px;right:32px;width:180px;height:4px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden;opacity:0;transition:opacity .2s ease}
   .reload-bar.show{opacity:1}
   .reload-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#22d3ee,#818cf8);box-shadow:0 0 10px rgba(56,189,248,.85);transition:width .04s linear}
@@ -68,14 +62,12 @@
   .reload-text.show{opacity:1}
   .bolt-indicator{position:absolute;bottom:126px;right:32px;display:flex;align-items:center;gap:6px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#fb7185;font-weight:700;opacity:0;transition:opacity .15s ease;pointer-events:none}
   .bolt-indicator.show{opacity:1}
-
   .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 40%,rgba(8,11,20,.72),rgba(4,5,9,.94));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .3s ease;overflow-y:auto;z-index:10}
   .overlay.show{opacity:1;pointer-events:auto}
   .overlay.settings{z-index:15}
   .overlay.block{z-index:30;background:rgba(4,5,9,.98);backdrop-filter:blur(20px)}
   .panel{width:min(800px,100%);background:linear-gradient(180deg,rgba(21,27,44,.92),rgba(11,15,25,.94));border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:38px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.02),inset 0 1px 0 rgba(255,255,255,.07);transform:translateY(14px) scale(.97);opacity:0;transition:transform .42s cubic-bezier(.2,.9,.3,1.15),opacity .3s ease}
   .overlay.show .panel{transform:translateY(0) scale(1);opacity:1}
-
   .brand{text-align:center;margin-bottom:26px}
   .brand-mark{width:52px;height:52px;margin:0 auto 16px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#6366f1);box-shadow:0 14px 40px -10px rgba(56,189,248,.85)}
   .brand-mark svg{width:26px;height:26px;color:#fff}
@@ -95,14 +87,12 @@
   .mode-desc{font-size:12px;line-height:1.45;color:var(--muted);margin-bottom:7px}
   .mode-meta{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);font-weight:700;opacity:.9}
   .mode-key{position:absolute;top:11px;right:13px;font-size:10px;font-weight:700;color:var(--muted);opacity:.55;font-family:ui-monospace,Menlo,monospace}
-
   .preset-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
   .preset-pill{padding:9px 20px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.075);color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .18s ease}
   .preset-pill:hover{background:rgba(255,255,255,.085);color:#fff;transform:translateY(-1px)}
   .preset-pill.selected{background:rgba(255,255,255,.055);border-color:var(--p-color);color:var(--p-color);box-shadow:0 0 0 1px var(--p-color),0 8px 22px -10px var(--p-color)}
   .diff-hint{text-align:center;font-size:11px;color:var(--muted);letter-spacing:.04em;margin-bottom:22px;opacity:.85}
   .diff-hint b{color:#fbbf24;font-weight:700}
-
   .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .btn{position:relative;padding:15px 30px;border-radius:15px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-weight:650;font-size:14.5px;letter-spacing:.04em;cursor:pointer;transition:transform .16s ease,background .16s ease,box-shadow .16s ease,filter .16s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px}
   .btn:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
@@ -113,10 +103,8 @@
   .btn.icon{padding:15px 20px}
   .btn.danger{color:#fb7185;border-color:rgba(251,113,133,.25)}
   .btn.danger:hover{background:rgba(251,113,133,.1)}
-
   .hint{margin-top:20px;text-align:center;font-size:11.5px;color:var(--muted);letter-spacing:.03em;line-height:1.9}
   kbd{display:inline-block;padding:1px 6px;margin:0 1px;border-radius:5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-bottom-width:2px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#cfd8ea}
-
   .grade{font-size:78px;font-weight:800;line-height:1;text-align:center;letter-spacing:-.03em;margin-bottom:6px;text-shadow:0 0 60px currentColor;filter:saturate(1.15)}
   .res-mode{text-align:center;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:20px}
   .res-score{text-align:center;font-size:clamp(44px,8vw,64px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace;background:linear-gradient(180deg,#ffffff,#9fb4d8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
@@ -126,58 +114,42 @@
   .res-item span{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:7px}
   .res-item b{font-size:20px;font-weight:750;font-variant-numeric:tabular-nums;font-family:ui-monospace,Menlo,monospace;color:#fff}
   .res-item.accent b{color:var(--accent)}
-
   .sound-btn{position:absolute;bottom:22px;right:24px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);color:var(--muted);cursor:pointer;transition:all .18s ease;pointer-events:auto;z-index:20}
   .sound-btn:hover{background:rgba(255,255,255,.1);color:#fff}
   .sound-btn.muted{color:#fb7185;border-color:rgba(251,113,133,.3)}
-
   .settings-panel{width:min(720px,100%);padding:0;display:flex;flex-direction:column;max-height:min(92vh,860px)}
   .settings-head{display:flex;align-items:center;justify-content:space-between;padding:26px 30px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
   .settings-head h2{font-size:20px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .close-btn{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:20px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:all .18s ease;font-family:inherit}
   .close-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-
   .settings-body{padding:24px 30px;overflow-y:auto;flex:1;min-height:0}
   .settings-body::-webkit-scrollbar{width:6px}
   .settings-body::-webkit-scrollbar-track{background:transparent}
   .settings-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
-
   .setting-row{display:grid;grid-template-columns:1fr 160px 60px;gap:14px;align-items:center;padding:12px 0}
   .setting-label{font-size:12.5px;font-weight:600;letter-spacing:.02em;color:#dfe6f5}
   .setting-label small{display:block;font-size:10.5px;color:var(--muted);font-weight:500;margin-top:2px;letter-spacing:.02em}
   .setting-value{font-size:12px;font-weight:700;color:#fff;text-align:right;font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
   .setting-row.disabled{opacity:.4;pointer-events:none}
-  .setting-row .bind-btn{
-    grid-column: 2 / span 2;
-    justify-self: stretch;
-    padding: 11px 18px;
-    border-radius: 11px;
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.12);
-    color: #fff;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all .16s ease;
-  }
+  .setting-row .bind-btn{grid-column:2 / span 2;justify-self:stretch;padding:11px 18px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font:inherit;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
   .setting-row .bind-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22)}
-  .setting-row .bind-btn.listening{
-    background: rgba(56,189,248,.14);
-    border-color: #38bdf8;
-    color: #38bdf8;
-    animation: bindPulse 1.05s ease-in-out infinite;
-  }
+  .setting-row .bind-btn.listening{background:rgba(56,189,248,.14);border-color:#38bdf8;color:#38bdf8;animation:bindPulse 1.05s ease-in-out infinite}
   @keyframes bindPulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.55)}50%{box-shadow:0 0 0 9px rgba(56,189,248,0)}}
-
   input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;outline:none;cursor:pointer}
   input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#6366f1);cursor:pointer;box-shadow:0 0 12px rgba(56,189,248,.7);transition:transform .15s ease}
   input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
   input[type="range"]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#6366f1);cursor:pointer;box-shadow:0 0 12px rgba(56,189,248,.7)}
   input[type="range"]::-moz-range-track{height:4px;background:rgba(255,255,255,.1);border-radius:2px;border:none}
-
+  input[type="number"]{
+    width:100%;padding:9px 12px;border-radius:10px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.12);
+    color:#fff;font:inherit;font-size:13px;font-weight:600;
+    font-family:ui-monospace,Menlo,monospace;
+    font-variant-numeric:tabular-nums;
+    outline:none;transition:all .15s ease;
+  }
+  input[type="number"]:focus{border-color:#38bdf8;background:rgba(56,189,248,.06);box-shadow:0 0 0 3px rgba(56,189,248,.14)}
   .switch{position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;justify-self:start}
   .switch input{opacity:0;width:0;height:0;position:absolute}
   .switch span{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:12px;transition:background .2s ease}
@@ -185,87 +157,44 @@
   .switch input:checked + span{background:linear-gradient(90deg,#22d3ee,#6366f1)}
   .switch input:checked + span::before{transform:translateX(20px)}
   .switch.assist input:checked + span{background:linear-gradient(90deg,#fbbf24,#f97316)}
-
+  .switch.calib input:checked + span{background:linear-gradient(90deg,#4ade80,#22d3ee)}
   .divider{display:flex;align-items:center;gap:12px;margin:22px 0 8px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700}
   .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07)}
-
   .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
   .mode-tab{flex:1;min-width:100px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);color:var(--muted);font:inherit;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
   .mode-tab:hover{background:rgba(255,255,255,.07);color:#fff}
   .mode-tab.active{background:rgba(56,189,248,.1);border-color:var(--tab-color);color:var(--tab-color);box-shadow:0 0 0 1px var(--tab-color),0 6px 18px -8px var(--tab-color)}
-
   .preset-section{margin:10px 0 6px}
   .preset-label{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
   .preset-btns{display:flex;gap:8px;flex-wrap:wrap}
   .preset-btn{padding:9px 18px;border-radius:11px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.075);color:var(--muted);font:inherit;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
   .preset-btn:hover{background:rgba(255,255,255,.08);color:#fff}
   .preset-btn.active{background:rgba(255,255,255,.055);border-color:var(--p-color);color:var(--p-color);box-shadow:0 0 0 1px var(--p-color)}
-
   .mult-display{margin-top:18px;padding:14px 18px;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(167,139,250,.08));border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
   .mult-display span{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
   .mult-display b{font-size:22px;font-weight:800;font-family:ui-monospace,Menlo,monospace;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums}
   .mult-display.assist-on b{background:linear-gradient(90deg,#fbbf24,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .mult-display .assist-note{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#fbbf24;font-weight:700;margin-top:3px;display:none}
   .mult-display.assist-on .assist-note{display:block}
-
-  /* Combined sub-mode checkboxes */
-  .submode-grid{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;
-  }
-  .submode-tile{
-    position:relative;display:flex;align-items:center;gap:10px;
-    padding:11px 14px;border-radius:12px;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.075);
-    cursor:pointer;user-select:none;
-    transition:all .16s ease;
-  }
+  .submode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+  .submode-tile{position:relative;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.075);cursor:pointer;user-select:none;transition:all .16s ease}
   .submode-tile:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
-  .submode-tile.on{
-    background:rgba(56,189,248,.07);
-    border-color:rgba(56,189,248,.4);
-    box-shadow:0 0 0 1px rgba(56,189,248,.35);
-  }
+  .submode-tile.on{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.4);box-shadow:0 0 0 1px rgba(56,189,248,.35)}
   .submode-tile input{display:none}
-  .submode-check{
-    flex:0 0 18px;width:18px;height:18px;border-radius:5px;
-    border:1.5px solid rgba(255,255,255,.25);
-    display:grid;place-items:center;
-    transition:all .16s ease;
-  }
-  .submode-tile.on .submode-check{
-    background:linear-gradient(135deg,#22d3ee,#6366f1);
-    border-color:transparent;
-    box-shadow:0 0 10px rgba(56,189,248,.7);
-  }
+  .submode-check{flex:0 0 18px;width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,.25);display:grid;place-items:center;transition:all .16s ease}
+  .submode-tile.on .submode-check{background:linear-gradient(135deg,#22d3ee,#6366f1);border-color:transparent;box-shadow:0 0 10px rgba(56,189,248,.7)}
   .submode-check svg{opacity:0;transition:opacity .12s ease}
   .submode-tile.on .submode-check svg{opacity:1}
   .submode-name{font-size:12px;font-weight:700;letter-spacing:.02em;color:#dfe6f5}
   .submode-tile.on .submode-name{color:#fff}
-
   .settings-foot{display:flex;gap:10px;justify-content:space-between;padding:18px 30px 26px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
-
-  /* Mobile block */
   .block-panel{width:min(520px,100%);text-align:center}
-  .block-icon{
-    width:64px;height:64px;margin:0 auto 20px;border-radius:20px;
-    display:grid;place-items:center;
-    background:linear-gradient(135deg,#fb7185,#f97316);
-    box-shadow:0 14px 40px -10px rgba(251,113,133,.9);
-  }
+  .block-icon{width:64px;height:64px;margin:0 auto 20px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#fb7185,#f97316);box-shadow:0 14px 40px -10px rgba(251,113,133,.9)}
   .block-icon svg{width:32px;height:32px;color:#fff}
   .block-panel h2{font-size:22px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
   .block-panel p{font-size:13.5px;line-height:1.65;color:var(--muted);margin-bottom:10px}
-  .block-panel .block-reasons{
-    text-align:left;display:inline-block;
-    padding:14px 20px;border-radius:14px;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.06);
-    margin:14px auto 22px;
-    font-size:12px;line-height:1.9;color:#cfd8ea;
-  }
+  .block-panel .block-reasons{text-align:left;display:inline-block;padding:14px 20px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin:14px auto 22px;font-size:12px;line-height:1.9;color:#cfd8ea}
   .block-panel .block-reasons b{color:#fff;font-weight:700}
-
   @media (max-width:640px){
     .panel{padding:26px 20px;border-radius:20px}
     .modes{grid-template-columns:1fr;gap:10px}
@@ -318,6 +247,7 @@
       <div class="chip" id="chipHits"><span>Hits</span><b id="chipHitsValue">0</b></div>
       <div class="chip" id="chipMisses"><span>Misses</span><b id="chipMissesValue">0</b></div>
       <div class="chip assist" id="chipAssist" style="display:none"><span>Aim Assist</span><b>ON</b></div>
+      <div class="chip calib" id="chipCalib" style="display:none"><span>Sens</span><b id="chipCalibValue">—</b></div>
     </div>
 
     <div class="ammo-hud" id="ammoHud">
@@ -342,7 +272,6 @@
     </svg>
   </button>
 
-  <!-- ============ MOBILE BLOCK ============ -->
   <div class="overlay block" id="mobileBlock">
     <div class="panel block-panel">
       <div class="block-icon">
@@ -352,21 +281,20 @@
         </svg>
       </div>
       <h2 id="blockTitle">Mouse & Keyboard Required</h2>
-      <p id="blockMsg">This aim trainer is built for desktop play with a real mouse. Touch input cannot replicate the precision needed to train properly.</p>
+      <p id="blockMsg">This trainer is built for a real mouse and keyboard. Touch input cannot replicate the information density needed to build transferable aim.</p>
       <div class="block-reasons">
-        <b>•</b> Touch has pixel-perfect precision, so it bypasses the skill<br/>
+        <b>•</b> Touch has lower information density than a mouse<br/>
         <b>•</b> No pointer lock means sensitivity settings don't apply<br/>
         <b>•</b> Right-click scoping and Shift-ADS are impossible<br/>
         <b>•</b> Aim assist cannot be trained without a mouse
       </div>
-      <p style="font-size:12px;opacity:.7">Please use a computer. If you're already on desktop and see this by mistake, click below.</p>
+      <p style="font-size:12px;opacity:.7">Please use a computer. If you're on desktop and see this by mistake, click below.</p>
       <div class="row" style="margin-top:18px">
         <button class="btn" id="blockBypass">I'm on Desktop — Continue</button>
       </div>
     </div>
   </div>
 
-  <!-- ============ MAIN MENU ============ -->
   <div class="overlay" id="menu">
     <div class="panel">
       <div class="brand">
@@ -377,7 +305,7 @@
           </svg>
         </div>
         <h1>Aim <em>Trainer</em></h1>
-        <p class="tagline">Sharpen your reflexes. Track your targets. Stay precise.</p>
+        <p class="tagline">Infinite plane · cm/360 calibration · aim recoil · edge spawns</p>
       </div>
 
       <div class="modes" id="modeList"></div>
@@ -398,12 +326,11 @@
 
       <div class="hint">
         <kbd>1</kbd>–<kbd>5</kbd> modes &nbsp;·&nbsp; <kbd>Space</kbd> start &nbsp;·&nbsp; <kbd>R</kbd> restart / reload &nbsp;·&nbsp; <kbd>Esc</kbd> menu &nbsp;·&nbsp; <kbd>M</kbd> mute<br/>
-        Sniper: <b>right-click</b> / <kbd>Shift</kbd> to scope &nbsp;·&nbsp; Tracking: hold shoot to lock, <b>right-click</b> for reflex sight
+        Crosshair at screen center · world scrolls · <b>cm/360° calibrated</b> · AR tracking has <b>aim recoil</b>
       </div>
     </div>
   </div>
 
-  <!-- ============ SETTINGS ============ -->
   <div class="overlay settings" id="settings">
     <div class="panel settings-panel">
       <div class="settings-head">
@@ -412,13 +339,48 @@
       </div>
 
       <div class="settings-body">
-        <div class="divider" style="margin-top:0">Controls</div>
+        <div class="divider" style="margin-top:0">Sensitivity — cm/360° Calibration</div>
 
         <div class="setting-row">
-          <div class="setting-label">Mouse Sensitivity<small>Applied during play via pointer lock</small></div>
+          <div class="setting-label">Use cm/360° Calibration<small>Match your in-game sensitivity for real transfer</small></div>
+          <label class="switch calib"><input type="checkbox" id="calibToggle"><span></span></label>
+          <div class="setting-value"></div>
+        </div>
+
+        <div id="calibSection">
+          <div class="setting-row">
+            <div class="setting-label">Mouse DPI<small>Your mouse's DPI setting</small></div>
+            <input type="number" id="dpiInput" min="100" max="32000" step="50" value="800">
+            <div class="setting-value">dpi</div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">cm / 360°<small>In-game: cm of mouse movement to turn 360°</small></div>
+            <input type="number" id="cmInput" min="5" max="120" step="0.5" value="30">
+            <div class="setting-value">cm</div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Game FOV<small>Horizontal FOV (used to scale world-per-degree)</small></div>
+            <input type="number" id="fovInput" min="60" max="130" step="1" value="103">
+            <div class="setting-value">°</div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Scoped Sens Multiplier<small>1.00 = screen-consistent; &lt;1 = finer control when zoomed</small></div>
+            <input type="range" id="scopeSensSlider" min="0.50" max="1.20" step="0.05" value="1.00">
+            <div class="setting-value" id="scopeSensVal">1.00×</div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;padding:4px 0 6px;opacity:.8">
+            Formula: <span style="font-family:ui-monospace,Menlo,monospace;color:#cfd8ea">worldUnitsPerCount = (360 / FOV) × screenWidth / ((cmPer360 / 2.54) × DPI)</span><br/>
+            Scoped: multiplied by <span style="font-family:ui-monospace,Menlo,monospace;color:#cfd8ea">scopeSens / adsZoom</span>.
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label" id="sensLabel">Sens Multiplier<small id="sensSub">Fine-tune on top of calibration</small></div>
           <input type="range" id="sensSlider" min="0.20" max="3.00" step="0.05" value="1.00">
           <div class="setting-value" id="sensVal">1.00×</div>
         </div>
+
+        <div class="divider">Controls</div>
 
         <div class="setting-row">
           <div class="setting-label">Shoot Key<small>Click, then press any key or mouse button</small></div>
@@ -432,7 +394,7 @@
         </div>
 
         <div class="setting-row">
-          <div class="setting-label">Aim Assist<small>Glides cursor toward targets when scoped. Penalizes score.</small></div>
+          <div class="setting-label">Aim Assist<small>Glides cursor toward targets when scoped. Trains a reflex you don't want in ranked.</small></div>
           <label class="switch assist"><input type="checkbox" id="aimAssistToggle"><span></span></label>
           <div class="setting-value"></div>
         </div>
@@ -470,7 +432,6 @@
           <div class="setting-value"></div>
         </div>
 
-        <!-- Combined sub-mode section (only visible when Combined tab active) -->
         <div id="submodeSection" style="display:none">
           <div class="divider">Combined — Sub-Modes</div>
           <div class="preset-label" style="margin-bottom:10px">Pick which target types to mix</div>
@@ -493,7 +454,6 @@
     </div>
   </div>
 
-  <!-- ============ RESULTS ============ -->
   <div class="overlay" id="results">
     <div class="panel">
       <div class="grade" id="resGrade">A</div>
@@ -532,21 +492,17 @@
   const blockBypass   = document.getElementById("blockBypass");
 
   let mobileBypass = false;
-  let mobileDetected = false;
 
   function showMobileBlock(title, msg) {
     blockTitle.textContent = title || "Mouse & Keyboard Required";
-    blockMsg.textContent = msg || "This aim trainer is built for desktop play with a real mouse. Touch input cannot replicate the precision needed to train properly.";
+    blockMsg.textContent = msg || "This trainer is built for a real mouse and keyboard. Touch input cannot replicate the information density needed to build transferable aim.";
     mobileBlockEl.classList.add("show");
     menuEl.classList.remove("show");
     settingsEl.classList.remove("show");
     resultsEl.classList.remove("show");
     hud.classList.remove("active");
   }
-
-  function hideMobileBlock() {
-    mobileBlockEl.classList.remove("show");
-  }
+  function hideMobileBlock() { mobileBlockEl.classList.remove("show"); }
 
   blockBypass.addEventListener("click", () => {
     mobileBypass = true;
@@ -555,7 +511,6 @@
     startTouchWatch();
   });
 
-  // Detect zero-real-mouse-movement during play
   let realMouseEvents = 0;
   let touchWatchActive = false;
   let playStartTime = 0;
@@ -565,11 +520,10 @@
     realMouseEvents = 0;
     playStartTime = performance.now();
   }
-
   function isTouchOnlyKick() {
     if (!touchWatchActive) return false;
-    if (realMouseEvents >= 3) return false;      // clearly a real mouse
-    if (performance.now() - playStartTime < 3000) return false; // grace period
+    if (realMouseEvents >= 5) return false;
+    if (performance.now() - playStartTime < 4000) return false;
     return true;
   }
 
@@ -590,15 +544,15 @@
   const MODES = {
     gridshot: {
       id:"gridshot", name:"Gridshot",
-      desc:"Six targets, enforced min distance from your cursor.",
+      desc:"Six static targets, enforced min distance from crosshair.",
       meta:"60s · 6 targets · sniper",
       duration:60, maxTargets:6, radius:44, points:100,
       color:"#22d3ee", color2:"#0891b2", par:9000, weapon:"sniper",
-      minFromMouse: 180,
+      minFromCamera: 180,
     },
     flick: {
       id:"flick", name:"Flick",
-      desc:"Single target at random angles and distances.",
+      desc:"Single target at random angle and distance from crosshair.",
       meta:"60s · single target · sniper",
       duration:60, maxTargets:1, radius:38, points:150,
       color:"#fb7185", color2:"#be123c", par:11500, weapon:"sniper",
@@ -606,7 +560,7 @@
     },
     precision: {
       id:"precision", name:"Precision",
-      desc:"Tiny targets, unpredictable lifetimes. Every shot counts.",
+      desc:"Tiny targets with unpredictable lifetimes.",
       meta:"45s · small & fast · sniper",
       duration:45, maxTargets:1, radius:20, points:260,
       color:"#fbbf24", color2:"#d97706", par:9500, weapon:"sniper",
@@ -614,8 +568,8 @@
     },
     tracking: {
       id:"tracking", name:"Tracking",
-      desc:"Hold shoot on a wandering target. Keep the lock meter up.",
-      meta:"30s · hold to lock · AR",
+      desc:"Hold shoot on a wandering target. AR has aim recoil you must compensate.",
+      meta:"30s · hold to lock · AR recoil",
       duration:30, maxTargets:1, radius:54, points:0,
       dps:250, lockRadiusFactor:0.55,
       color:"#a78bfa", color2:"#6d28d9", par:4200, weapon:"ar",
@@ -646,15 +600,10 @@
       <path d="M1.5 14c2.6 0 3.4-8 6-8s3.4 8 6 8 3.4-8 5-8" opacity=".55"/>
       <circle cx="10" cy="10" r="3.6" fill="currentColor" stroke="none"/></svg>`,
     combined:`<svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="6" cy="6" r="3"/>
-      <circle cx="14" cy="14" r="3"/>
-      <path d="M9 9 11 11"/>
-      <path d="M14 6h3M6 14v3"/></svg>`,
+      <circle cx="6" cy="6" r="3"/><circle cx="14" cy="14" r="3"/>
+      <path d="M9 9 11 11"/><path d="M14 6h3M6 14v3"/></svg>`,
   };
 
-  /* =========================================================
-     PER-MODE DEFAULTS
-     ========================================================= */
   const DEFAULT_MODE_SETTINGS = {
     gridshot:  { hitScale:1.00, moving:false, moveSpeed:1.00, ammo:false },
     flick:     { hitScale:1.00, moving:false, moveSpeed:1.00, ammo:false },
@@ -666,14 +615,30 @@
 
   const settings = {
     sensitivity: 1.00,
+    scopeSensitivity: 1.00,
     shootKey: "Mouse0",
     aimAssist: false,
     fpsCap: 0,
+    calibration: {
+      enabled: false,
+      dpi: 800,
+      cmPer360: 30,
+      fov: 103,
+    },
     modes: JSON.parse(JSON.stringify(DEFAULT_MODE_SETTINGS)),
     currentTab: "gridshot",
   };
 
   const AIM_ASSIST_PENALTY = 0.55;
+  const SPAWN_ANIM_MS = 160;
+
+  // AR aim recoil parameters
+  const RECOIL = {
+    kickY: 2.6,           // upward world-units per shot
+    kickXJitter: 1.0,     // ± horizontal wander per shot
+    maxClimb: 150,        // cap per burst
+    burstResetDelay: 1.2, // seconds of no-fire before a new baseline
+  };
 
   function isTracking(modeId)   { return !!MODES[modeId].trackingMode; }
   function isCombined(modeId)   { return !!MODES[modeId].combinedMode; }
@@ -683,7 +648,6 @@
     const hitMult = Math.pow(1 / s.hitScale, 0.8);
     let moveMult = 1;
     if (isCombined(modeId)) {
-      // Combined always has variety → slight inherent bonus
       moveMult = 1.15;
       if (s.moving) moveMult *= 0.65 + s.moveSpeed * 0.5;
     } else if (s.moving) {
@@ -713,7 +677,6 @@
     if (isTracking(modeId)) s.moving = true;
     else s.moving = p.moving;
   }
-
   function presetMatches(modeId, presetId) {
     const s = settings.modes[modeId];
     const p = PRESETS[presetId];
@@ -721,10 +684,8 @@
     const movingOk = isTracking(modeId) ? true : (s.moving === p.moving);
     return Math.abs(s.hitScale - p.hitScale) < 0.005
         && Math.abs(s.moveSpeed - p.moveSpeed) < 0.005
-        && s.ammo === p.ammo
-        && movingOk;
+        && s.ammo === p.ammo && movingOk;
   }
-
   function describeConfig(modeId) {
     for (const pid of PRESET_ORDER) if (presetMatches(modeId, pid)) return PRESETS[pid].name;
     return "Custom";
@@ -745,15 +706,13 @@
       return "M" + b;
     }
     const map = {
-      Space: "Space", Enter: "Enter", Tab: "Tab", Backspace: "Bksp",
-      ShiftLeft: "L-Shift", ShiftRight: "R-Shift",
-      ControlLeft: "L-Ctrl", ControlRight: "R-Ctrl",
-      AltLeft: "L-Alt", AltRight: "R-Alt",
-      CapsLock: "Caps", Escape: "Esc",
-      ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→",
-      Semicolon: ";", Quote: "'", Comma: ",", Period: ".", Slash: "/",
-      BracketLeft: "[", BracketRight: "]", Backslash: "\\",
-      Minus: "-", Equal: "=", Backquote: "`",
+      Space:"Space",Enter:"Enter",Tab:"Tab",Backspace:"Bksp",
+      ShiftLeft:"L-Shift",ShiftRight:"R-Shift",ControlLeft:"L-Ctrl",ControlRight:"R-Ctrl",
+      AltLeft:"L-Alt",AltRight:"R-Alt",CapsLock:"Caps",Escape:"Esc",
+      ArrowUp:"↑",ArrowDown:"↓",ArrowLeft:"←",ArrowRight:"→",
+      Semicolon:";",Quote:"'",Comma:",",Period:".",Slash:"/",
+      BracketLeft:"[",BracketRight:"]",Backslash:"\\",
+      Minus:"-",Equal:"=",Backquote:"`",
     };
     if (map[code]) return map[code];
     if (code.startsWith("Key")) return code.slice(3);
@@ -788,6 +747,8 @@
   const chipMisses   = document.getElementById("chipMisses");
   const chipMissesValue = document.getElementById("chipMissesValue");
   const chipAssist   = document.getElementById("chipAssist");
+  const chipCalib    = document.getElementById("chipCalib");
+  const chipCalibValue = document.getElementById("chipCalibValue");
   const fpsCounter   = document.getElementById("fpsCounter");
   const menuEl     = document.getElementById("menu");
   const settingsEl = document.getElementById("settings");
@@ -813,8 +774,16 @@
   const reloadText    = document.getElementById("reloadText");
   const boltIndicator = document.getElementById("boltIndicator");
 
+  const calibToggle    = document.getElementById("calibToggle");
+  const calibSection   = document.getElementById("calibSection");
+  const dpiInput       = document.getElementById("dpiInput");
+  const cmInput        = document.getElementById("cmInput");
+  const fovInput       = document.getElementById("fovInput");
+  const scopeSensSlider= document.getElementById("scopeSensSlider");
+  const scopeSensVal   = document.getElementById("scopeSensVal");
   const sensSlider     = document.getElementById("sensSlider");
   const sensVal        = document.getElementById("sensVal");
+  const sensSub        = document.getElementById("sensSub");
   const shootKeyBtn    = document.getElementById("shootKeyBtn");
   const fpsSlider      = document.getElementById("fpsSlider");
   const fpsVal         = document.getElementById("fpsVal");
@@ -866,8 +835,7 @@
       o.start(t); o.stop(t + dur + 0.03);
     }
     return {
-      init,
-      setMuted(v){muted=v;}, isMuted(){return muted;},
+      init, setMuted(v){muted=v;}, isMuted(){return muted;},
       hit(streak){ const base=540+Math.min(streak,14)*38;
         tone({freq:base,dur:0.13,type:"sine",vol:0.3});
         tone({freq:base*2.01,dur:0.075,type:"triangle",vol:0.1}); },
@@ -887,8 +855,8 @@
   })();
 
   const WEAPONS = {
-    sniper: { magSize:5,  boltTime:1.10, reloadTime:2.30, tacticalReloadTime:0,    autoReloadDelay:0.35 },
-    ar:     { magSize:30, boltTime:0,    reloadTime:1.90, tacticalReloadTime:1.25, autoReloadDelay:-1   },
+    sniper: { magSize:5,  boltTime:1.10, reloadTime:2.30, tacticalReloadTime:0,    autoReloadDelay:0.35, fireRate:0 },
+    ar:     { magSize:30, boltTime:0,    reloadTime:1.90, tacticalReloadTime:1.25, autoReloadDelay:-1,   fireRate:0.090 },
   };
 
   /* =========================================================
@@ -918,10 +886,6 @@
     canvas.width  = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
     buildBackground();
-    for (const t of state.targets){
-      t.x = clamp(t.x, t.r + 6, W - t.r - 6);
-      t.y = clamp(t.y, t.r + 6, H - t.r - 6);
-    }
   }
 
   /* =========================================================
@@ -949,6 +913,12 @@
     c.closePath();
   }
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function angleDiff(a, b) {
+    let d = b - a;
+    while (d >  Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    return d;
+  }
 
   /* =========================================================
      STATE
@@ -961,24 +931,51 @@
     shake:0, hitMarker:0, crossKick:0,
     countdown:0, goFlash:0,
     lockMeter:0, trackTime:0, trackHeld:0, lockFlash:0,
-    gunAngle:-2.2, recoil:0, muzzle:0,
+    gunAngle:0, recoil:0, muzzle:0,
     ads:false, adsZoom:1,
     movement: { type:"none", aggression:0 },
     lockedSettings: null,
     assistTarget: null,
-
     ammo: {
       enabled: false, inMag: 0, magSize: 0,
       reloading:false, reloadTime:0, reloadDuration:0, isTactical:false,
       shotCooldown:0, autoReloadTimer:-1,
       shotsFired:0, reloads:0, emptyClicks:0,
     },
+    camRecoil: {
+      active: false,
+      baselineX: 0,
+      baselineY: 0,
+      timeSinceShot: 999,
+      climbY: 0,
+    },
   };
 
-  const mouse = { x:0, y:0, down:false, inside:false };
+  const cam = { x: 0, y: 0 };
   const mouseVel = { x:0, y:0 };
+
   let pointerLocked = false;
   let listeningForBind = false;
+  let mouseDown = false;
+
+  /* =========================================================
+     SENSITIVITY
+     ========================================================= */
+  function worldUnitsPerCount() {
+    let base;
+    if (!settings.calibration.enabled) {
+      base = 1.2 * settings.sensitivity;
+    } else {
+      const { dpi, cmPer360, fov } = settings.calibration;
+      const countsPer360 = (cmPer360 / 2.54) * dpi;
+      const worldUnitsPer360 = (360 / fov) * W;
+      base = (worldUnitsPer360 / countsPer360) * settings.sensitivity;
+    }
+    if (state.ads && state.adsZoom > 1.01) {
+      return base * settings.scopeSensitivity / state.adsZoom;
+    }
+    return base;
+  }
 
   /* =========================================================
      AMMO
@@ -1008,7 +1005,6 @@
     a.reloadTime = dur;
     a.autoReloadTimer = -1;
     a.reloads++;
-    state.ads = false;
     SFX.reloadStart();
   }
   function finishReload(){
@@ -1039,21 +1035,40 @@
   }
 
   /* =========================================================
+     AIM RECOIL (AR tracking)
+     ========================================================= */
+  function applyAimRecoil() {
+    const cr = state.camRecoil;
+    if (!cr.active) {
+      cr.active = true;
+      cr.baselineX = cam.x;
+      cr.baselineY = cam.y;
+    }
+    cr.timeSinceShot = 0;
+    const climbed = cr.baselineY - cam.y;
+    if (climbed < RECOIL.maxClimb) {
+      cam.y -= RECOIL.kickY;
+      cam.x += (Math.random() - 0.5) * 2 * RECOIL.kickXJitter;
+      cr.climbY = cr.baselineY - cam.y;
+    }
+    state.shake = Math.min(state.shake + 0.9, 7);
+  }
+
+  /* =========================================================
      TARGET
      ========================================================= */
   class Target {
-    constructor(cfg, x, y, r, life, movement, style){
+    constructor(cfg, wx, wy, r, life, movement, style){
       this.cfg = cfg;
-      this.x=x; this.y=y; this.r=r; this.maxR=r;
+      this.x = wx; this.y = wy;
+      this.r = r; this.maxR = r;
       this.life = life || 0;
       this.bornAt = performance.now();
       this.age = 0; this.spawnT = 0;
       this.pulse = Math.random() * Math.PI * 2;
       this.expired = false; this.locked = false; this.hitFlash = 0;
-      this.assisted = false;
-
-      // Combined-mode style tag (which sub-mode this target belongs to)
       this.style = style || "default";
+      this.offscreenTime = 0;
 
       this.movement = movement || { type:"none", aggression:0 };
       this.moving = this.movement.type !== "none";
@@ -1078,7 +1093,7 @@
     }
 
     get scale(){
-      const t = Math.min(1, this.spawnT / 0.16);
+      const t = Math.min(1, this.spawnT / (SPAWN_ANIM_MS / 1000));
       const c1 = 1.70158, c3 = c1 + 1;
       return 1 + c3 * Math.pow(t-1,3) + c1 * Math.pow(t-1,2);
     }
@@ -1092,16 +1107,21 @@
       const turn = Math.sin(this.phase1) * (1.7 + ag * 0.8)
                  + Math.sin(this.phase2 * 1.7 + 1.3) * (1.05 + ag * 0.55);
       this.angle += turn * dt;
+
+      const dx = this.x - cam.x, dy = this.y - cam.y;
+      const d = Math.hypot(dx, dy);
+      const maxR = Math.min(W, H) * 0.6;
+      if (d > maxR){
+        const toCam = Math.atan2(-dy, -dx);
+        this.angle += angleDiff(this.angle, toCam) * dt * 3.5;
+      }
+
       const base = 150 + ag * 170;
       const spd = base + Math.sin(this.phase3) * (55 + ag * 40)
                        + Math.sin(this.phase2 * 0.6) * (30 + ag * 20);
       this.x += Math.cos(this.angle) * spd * dt;
       this.y += Math.sin(this.angle) * spd * dt;
-      const pad = this.r + 10;
-      if (this.x < pad)     { this.x = pad;     this.angle = Math.PI - this.angle; }
-      if (this.x > W - pad) { this.x = W - pad; this.angle = Math.PI - this.angle; }
-      if (this.y < pad)     { this.y = pad;     this.angle = -this.angle; }
-      if (this.y > H - pad) { this.y = H - pad; this.angle = -this.angle; }
+
       while (this.angle >  Math.PI*2) this.angle -= Math.PI*2;
       while (this.angle < -Math.PI*2) this.angle += Math.PI*2;
     }
@@ -1110,7 +1130,18 @@
       const ag = this.aggression;
       this.wanderPhase += dt * (1.6 + ag * 1.4);
       this.nextTurn -= dt;
-      if (this.nextTurn <= 0){
+
+      const dx = this.x - cam.x, dy = this.y - cam.y;
+      const d = Math.hypot(dx, dy);
+      const maxR = Math.min(W, H) * 0.75;
+
+      if (d > maxR) {
+        const toCam = Math.atan2(-dy, -dx);
+        const speed = Math.max(180, 70 + ag * 260);
+        this.tvx = Math.cos(toCam) * speed;
+        this.tvy = Math.sin(toCam) * speed;
+        this.nextTurn = 1.2;
+      } else if (this.nextTurn <= 0){
         const a = Math.random() * Math.PI * 2;
         const baseSpeed = 70 + ag * 260;
         const speed = baseSpeed * (0.55 + Math.random() * 0.95);
@@ -1118,11 +1149,13 @@
         this.tvy = Math.sin(a) * speed;
         this.nextTurn = 0.28 + Math.random() * 0.85 - ag * 0.18;
       }
+
       const k = 1 - Math.exp(-(3 + ag * 5) * dt);
       this.vx += (this.tvx - this.vx) * k;
       this.vy += (this.tvy - this.vy) * k;
       const wx = Math.sin(this.wanderPhase) * (25 + ag * 55);
       const wy = Math.cos(this.wanderPhase * 1.37 + 1.1) * (25 + ag * 55);
+
       if (this.dashTime > 0){ this.dashTime -= dt; }
       else {
         this.dashCooldown -= dt;
@@ -1135,14 +1168,10 @@
           this.dashCooldown = 1.1 + Math.random() * 2.4 - ag * 0.55;
         }
       }
+
       let mx = this.vx + wx, my = this.vy + wy;
       if (this.dashTime > 0){ mx += this.dashVx; my += this.dashVy; }
       this.x += mx * dt; this.y += my * dt;
-      const pad = this.r + 10;
-      if (this.x < pad)     { this.x = pad;     this.vx = Math.abs(this.vx); this.tvx = Math.abs(this.tvx); this.dashVx = Math.abs(this.dashVx); }
-      if (this.x > W - pad) { this.x = W - pad; this.vx = -Math.abs(this.vx); this.tvx = -Math.abs(this.tvx); this.dashVx = -Math.abs(this.dashVx); }
-      if (this.y < pad)     { this.y = pad;     this.vy = Math.abs(this.vy); this.tvy = Math.abs(this.tvy); this.dashVy = Math.abs(this.dashVy); }
-      if (this.y > H - pad) { this.y = H - pad; this.vy = -Math.abs(this.vy); this.tvy = -Math.abs(this.tvy); this.dashVy = -Math.abs(this.dashVy); }
     }
 
     updateTrail(dt){
@@ -1163,9 +1192,19 @@
     update(dt){
       this.age += dt; this.spawnT += dt; this.pulse += dt * 2.6;
       if (this.hitFlash > 0) this.hitFlash -= dt;
+
       if      (this.movement.type === "orbital") this.updateOrbital(dt);
       else if (this.movement.type === "strafe")  this.updateStrafe(dt);
+
       this.updateTrail(dt);
+
+      if (!this.moving) {
+        const sx = this.x - cam.x, sy = this.y - cam.y;
+        const onScreen = Math.abs(sx) < W/2 + this.r && Math.abs(sy) < H/2 + this.r;
+        if (onScreen) this.offscreenTime = 0;
+        else this.offscreenTime += dt;
+      }
+
       if (this.life > 0){
         const p = this.age / this.life;
         this.r = this.maxR * (1 - 0.34 * p);
@@ -1213,23 +1252,24 @@
   }
 
   /* =========================================================
-     SPAWN — with min-from-mouse + angle-spawn + variable life
+     SPAWN
      ========================================================= */
-  function randomPos(r, awayFromMouse, minFromMouse){
+  function randomPos(r, awayFromCamera, minFromCamera){
     const pad = r + 26;
-    const minX = pad, maxX = Math.max(pad+1, W-pad);
-    const minY = pad, maxY = Math.max(pad+1, H-pad);
+    const minWorldX = cam.x - W/2 + pad;
+    const maxWorldX = cam.x + W/2 - pad;
+    const minWorldY = cam.y - H/2 + pad;
+    const maxWorldY = cam.y + H/2 - pad;
 
-    const minR = Math.max(0, minFromMouse || 0);
+    const minR = Math.max(0, minFromCamera || 0);
 
-    let best = { x: W/2, y: H/2 }, bestScore = -Infinity;
+    let best = { x: cam.x, y: cam.y }, bestScore = -Infinity;
     for (let i=0;i<44;i++){
-      const x = minX + Math.random()*(maxX-minX);
-      const y = minY + Math.random()*(maxY-minY);
+      const x = minWorldX + Math.random()*(maxWorldX - minWorldX);
+      const y = minWorldY + Math.random()*(maxWorldY - minWorldY);
 
-      // Hard reject if inside min distance from cursor
       if (minR > 0){
-        const md = Math.hypot(mouse.x - x, mouse.y - y);
+        const md = Math.hypot(cam.x - x, cam.y - y);
         if (md < minR) continue;
       }
 
@@ -1238,33 +1278,63 @@
       if (!isFinite(minD)) minD = 2000;
 
       let s = minD;
-      if (awayFromMouse) s = Math.min(s, Math.hypot(mouse.x-x, mouse.y-y) * 0.45); // weaker bias
+      if (awayFromCamera) s = Math.min(s, Math.hypot(cam.x-x, cam.y-y) * 0.45);
       s += Math.random()*8;
       if (s > bestScore){ bestScore = s; best = {x,y}; }
     }
     return best;
   }
 
-  // Angle-based position for Flick: pick angle, place at max distance
   function angleSpawnPos(r){
     const pad = r + 30;
-    const cx = W/2, cy = H/2;
     const maxDist = Math.min(W, H) * 0.42;
 
-    for (let i=0;i<20;i++){
+    for (let i=0;i<24;i++){
       const ang = Math.random() * Math.PI * 2;
       const dist = maxDist * (0.55 + Math.random() * 0.45);
-      const x = clamp(cx + Math.cos(ang) * dist, pad, W - pad);
-      const y = clamp(cy + Math.sin(ang) * dist, pad, H - pad);
+      const wx = cam.x + Math.cos(ang) * dist;
+      const wy = cam.y + Math.sin(ang) * dist;
 
-      // Reject close to mouse
-      if (Math.hypot(mouse.x - x, mouse.y - y) < 200) continue;
+      const sx = wx - cam.x, sy = wy - cam.y;
+      if (Math.abs(sx) > W/2 - pad || Math.abs(sy) > H/2 - pad) continue;
+      if (Math.hypot(sx, sy) < 200) continue;
 
       let minD = Infinity;
-      for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-x, t.y-y) - t.r - r);
-      if (minD > r * 1.2) return { x, y };
+      for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-wx, t.y-wy) - t.r - r);
+      if (minD > r * 1.2) return { x: wx, y: wy };
     }
     return randomPos(r, true, 200);
+  }
+
+  // Edge-biased spawn for recycle — outer 60-100% ring, never inside 55% of min half-size
+  function edgeSpawnPos(r) {
+    const pad = r + 26;
+    const halfW = W / 2 - pad;
+    const halfH = H / 2 - pad;
+    const minHalf = Math.min(halfW, halfH);
+    const innerR = minHalf * 0.55;
+
+    for (let i = 0; i < 50; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const t = 0.6 + Math.random() * 0.4;
+      const dist = innerR + (minHalf - innerR) * t;
+      const wx = cam.x + Math.cos(ang) * dist;
+      const wy = cam.y + Math.sin(ang) * dist;
+
+      if (Math.abs(wx - cam.x) > halfW - 4) continue;
+      if (Math.abs(wy - cam.y) > halfH - 4) continue;
+      if (Math.hypot(wx - cam.x, wy - cam.y) < innerR) continue;
+
+      let ok = true;
+      for (const t2 of state.targets) {
+        const dx = t2.x - wx, dy = t2.y - wy;
+        const rr = r + t2.r + 4;
+        if (dx*dx + dy*dy < rr * rr) { ok = false; break; }
+      }
+      if (!ok) continue;
+      return { x: wx, y: wy };
+    }
+    return randomPos(r, true, innerR);
   }
 
   function spawnTargets(){
@@ -1281,7 +1351,6 @@
       return;
     }
 
-    // Combined mode: per-slot sub-mode
     if (cfg.combinedMode){
       const activeSubs = s.subModes || { gridshot:true, flick:true, precision:true, tracking:true };
       const pool = [];
@@ -1292,34 +1361,31 @@
       if (pool.length === 0) pool.push("gridshot");
 
       let guard = 0;
-      while (state.targets.length < cfg.maxTargets && guard++ < 20){
+      while (state.targets.length < cfg.maxTargets && guard++ < 24){
         const pick = pool[Math.floor(Math.random() * pool.length)];
-        let r, life, moveProf, minFromMouse = 0, useAngle = false;
+        let r, life, moveProf, minFromCam = 0, useAngle = false;
 
         if (pick === "gridshot"){
           r = 44; life = 0; moveProf = { type:"none", aggression:0 };
-          minFromMouse = 180;
+          minFromCam = 180;
         } else if (pick === "flick"){
           r = 38; life = 0; moveProf = { type:"none", aggression:0 };
           useAngle = true;
         } else if (pick === "precision"){
           r = 20 * (0.85 + Math.random()*0.32);
-          life = 1.6 + Math.random()*1.1;  // unpredictable
+          life = 1.4 + Math.random()*1.6;
           moveProf = { type:"none", aggression:0 };
-        } else if (pick === "tracking"){
-          r = 50;
-          life = 0;
-          moveProf = { type:"orbital", aggression: state.lockedSettings.moveSpeed || 0.9 };
+        } else {
+          r = 50; life = 0;
+          moveProf = { type:"orbital", aggression: s.moveSpeed || 0.9 };
         }
 
-        // If the user has "moving" enabled in combined, override moveProf
         if (s.moving && pick !== "tracking"){
           moveProf = { type:"strafe", aggression: s.moveSpeed };
         }
 
-        const p = useAngle ? angleSpawnPos(r) : randomPos(r, false, minFromMouse);
+        const p = useAngle ? angleSpawnPos(r) : randomPos(r, false, minFromCam);
 
-        // Ensure no overlap
         let tooClose = false;
         for (const t of state.targets) if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 4) tooClose = true;
         if (tooClose) continue;
@@ -1329,14 +1395,12 @@
       return;
     }
 
-    // Standard modes
     let guard = 0;
-    while (state.targets.length < cfg.maxTargets && guard++ < 18){
+    while (state.targets.length < cfg.maxTargets && guard++ < 20){
       let r, life = 0, p;
 
       if (cfg.id === "precision"){
         r = cfg.radius * (0.85 + Math.random()*0.32);
-        // Unpredictable lifetime — much shorter and highly variable
         life = 1.4 + Math.random() * 1.6;
         p = randomPos(r, true, 150);
       } else if (cfg.id === "flick"){
@@ -1344,13 +1408,83 @@
         p = angleSpawnPos(r);
       } else if (cfg.id === "gridshot"){
         r = cfg.radius;
-        p = randomPos(r, false, cfg.minFromMouse);
+        p = randomPos(r, false, cfg.minFromCamera);
       } else {
         r = cfg.radius;
         p = randomPos(r, cfg.maxTargets === 1);
       }
 
+      let tooClose = false;
+      for (const t of state.targets) if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 4) tooClose = true;
+      if (tooClose) continue;
+
       state.targets.push(new Target(cfg, p.x, p.y, r, life, move, cfg.id));
+    }
+  }
+
+  function respawnStatic(cfg, oldTarget, edgeBiased){
+    const idx = state.targets.indexOf(oldTarget);
+    if (idx >= 0) state.targets.splice(idx, 1);
+
+    const r = oldTarget.r;
+    let life = 0;
+    if (cfg.variableLife || oldTarget.life > 0){
+      life = 1.4 + Math.random() * 1.6;
+    }
+
+    let moveProf = state.movement;
+    let minFromCam = cfg.minFromCamera || 0;
+    let useAngle = false;
+
+    if (cfg.combinedMode){
+      const pick = oldTarget.style;
+      if (pick === "gridshot"){
+        minFromCam = 180; moveProf = { type:"none", aggression:0 };
+      } else if (pick === "flick"){
+        useAngle = true; moveProf = { type:"none", aggression:0 };
+      } else if (pick === "precision"){
+        moveProf = { type:"none", aggression:0 };
+      } else if (pick === "tracking"){
+        moveProf = { type:"orbital", aggression: state.lockedSettings.moveSpeed || 0.9 };
+      }
+      if (state.lockedSettings.moving && pick !== "tracking"){
+        moveProf = { type:"strafe", aggression: state.lockedSettings.moveSpeed };
+      }
+    }
+
+    const p = useAngle ? angleSpawnPos(r)
+            : (edgeBiased ? edgeSpawnPos(r) : randomPos(r, false, minFromCam));
+
+    for (const t of state.targets){
+      if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 2){
+        const retryX = clamp(p.x + (Math.random()-0.5)*W*0.4, cam.x - W/2 + r + 26, cam.x + W/2 - r - 26);
+        const retryY = clamp(p.y + (Math.random()-0.5)*H*0.4, cam.y - H/2 + r + 26, cam.y + H/2 - r - 26);
+        state.targets.push(new Target(cfg, retryX, retryY, r, life, moveProf, oldTarget.style));
+        return;
+      }
+    }
+
+    state.targets.push(new Target(cfg, p.x, p.y, r, life, moveProf, oldTarget.style));
+  }
+
+  function recycleOffscreenTargets(){
+    const cfg = MODES[state.mode];
+    if (cfg.trackingMode) return;
+
+    let inView = 0;
+    for (const t of state.targets){
+      const sx = t.x - cam.x, sy = t.y - cam.y;
+      if (Math.abs(sx) < W/2 + t.r && Math.abs(sy) < H/2 + t.r) inView++;
+    }
+
+    const forceImmediate = (cfg.maxTargets || 1) > 1 && inView === 0 && state.targets.length > 0;
+
+    for (let i = state.targets.length-1; i >= 0; i--){
+      const t = state.targets[i];
+      if (t.moving) continue;
+      if (forceImmediate || t.offscreenTime > 0.5){
+        respawnStatic(cfg, t, true);
+      }
     }
   }
 
@@ -1364,7 +1498,6 @@
     state.streak++;
     if (state.streak > state.bestStreak) state.bestStreak = state.streak;
 
-    // Per-hit points in combined mode reflect the sub-mode difficulty
     let basePoints = cfg.points;
     if (cfg.combinedMode){
       basePoints = t.style === "precision" ? 240
@@ -1372,7 +1505,11 @@
                  : t.style === "tracking"  ? 120
                  : 100;
     }
-    if (cfg.id !== "gridshot") state.reactions.push(performance.now() - t.bornAt);
+
+    if (cfg.id !== "gridshot"){
+      const rt = Math.max(0, performance.now() - t.bornAt - SPAWN_ANIM_MS);
+      state.reactions.push(rt);
+    }
 
     const mult = (1 + Math.min(state.streak-1, 20) * 0.05) * ls.scoreMult;
     const gained = Math.round(basePoints * mult);
@@ -1420,9 +1557,9 @@
     for (let i=state.targets.length-1;i>=0;i--){
       const t = state.targets[i];
       const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - mouse.x, t.y - mouse.y) <= hitR){ hitTarget(t); return; }
+      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ hitTarget(t); return; }
     }
-    missShot(mouse.x, mouse.y);
+    missShot(cam.x, cam.y);
   }
 
   /* =========================================================
@@ -1437,7 +1574,7 @@
 
     let best = null, bestD = Infinity;
     for (const t of state.targets){
-      const d = Math.hypot(t.x - mouse.x, t.y - mouse.y);
+      const d = Math.hypot(t.x - cam.x, t.y - cam.y);
       const snapR = t.radius + 65;
       if (d < snapR && d > 2 && d < bestD){ bestD = d; best = t; }
     }
@@ -1445,8 +1582,8 @@
 
     state.assistTarget = best;
     const k = 1 - Math.exp(-4.5 * dt);
-    mouse.x += (best.x - mouse.x) * k;
-    mouse.y += (best.y - mouse.y) * k;
+    cam.x += (best.x - cam.x) * k;
+    cam.y += (best.y - cam.y) * k;
   }
 
   /* =========================================================
@@ -1459,12 +1596,12 @@
     if (!t) return;
 
     const lockR = t.radius * ls.hitScale * cfg.lockRadiusFactor;
-    const d = Math.hypot(t.x - mouse.x, t.y - mouse.y);
+    const d = Math.hypot(t.x - cam.x, t.y - cam.y);
     const a = state.ammo;
     const w = WEAPONS.ar;
 
     const canFire = !a.enabled || (!a.reloading && a.shotCooldown <= 0 && a.inMag > 0);
-    const inLock = mouse.down && d <= lockR && canFire;
+    const inLock = mouseDown && d <= lockR && canFire;
 
     if (inLock){
       state.lockMeter = Math.min(1, state.lockMeter + dt * 0.85);
@@ -1475,14 +1612,18 @@
       state.muzzle = Math.max(state.muzzle, 0.022 + Math.random() * 0.022);
       state.recoil = Math.max(state.recoil, 0.14 + Math.random() * 0.08);
 
-      if (a.enabled){
-        a.shotCooldown -= dt;
-        if (a.shotCooldown <= 0 && a.inMag > 0){
-          a.inMag--; a.shotsFired++;
-          a.shotCooldown = w.fireRate;
-          updateAmmoHUD();
+      // AR always fires at cadence while locked. Recoil is independent of ammo setting.
+      a.shotCooldown -= dt;
+      if (a.shotCooldown <= 0){
+        a.shotCooldown = w.fireRate;
+        if (a.enabled){
+          if (a.inMag > 0){ a.inMag--; a.shotsFired++; updateAmmoHUD(); }
+        } else {
+          a.shotsFired++;
         }
+        applyAimRecoil();
       }
+
       if (Math.random() < 0.35){
         const aa = Math.random() * Math.PI * 2;
         const rr = t.radius * (0.3 + Math.random() * 0.7);
@@ -1494,11 +1635,11 @@
         });
       }
     } else {
-      if (state.lockMeter > 0.55 && mouse.down){ state.lockFlash = 0.35; SFX.lockBreak(); }
+      if (state.lockMeter > 0.55 && mouseDown){ state.lockFlash = 0.35; SFX.lockBreak(); }
       state.lockMeter = Math.max(0, state.lockMeter - dt * 1.9);
       t.locked = false;
     }
-    if (mouse.down) state.trackHeld += dt;
+    if (mouseDown) state.trackHeld += dt;
   }
 
   /* =========================================================
@@ -1542,10 +1683,17 @@
     state.ads = false; state.adsZoom = 1;
     state.assistTarget = null;
 
-    initAmmo();
+    state.camRecoil.active = false;
+    state.camRecoil.climbY = 0;
+    state.camRecoil.timeSinceShot = 999;
 
-    mouse.x = W/2; mouse.y = H/2;
+    cam.x = 0; cam.y = 0;
     mouseVel.x = 0; mouseVel.y = 0;
+
+    const gax = W - 90, gay = H - 70;
+    state.gunAngle = Math.atan2(H/2 - gay, W/2 - gax);
+
+    initAmmo();
 
     state.phase = "countdown";
     state.countdown = 3.0;
@@ -1556,11 +1704,14 @@
     hud.classList.add("active");
 
     chipAssist.style.display = state.lockedSettings.aimAssist ? "" : "none";
-
-    // Reset touch-watch state
-    if (mobileBypass){
-      startTouchWatch();
+    if (settings.calibration.enabled) {
+      chipCalib.style.display = "";
+      chipCalibValue.textContent = `${settings.calibration.cmPer360}cm/360`;
+    } else {
+      chipCalib.style.display = "none";
     }
+
+    if (mobileBypass) startTouchWatch();
 
     SFX.init(); SFX.tick(); updateHUD();
     updateAmmoHUD();
@@ -1570,7 +1721,7 @@
   function endGame(){
     state.phase = "results";
     state.targets = [];
-    mouse.down = false; state.ads = false;
+    mouseDown = false; state.ads = false;
     state.ammo.reloading = false;
     state.assistTarget = null;
     releaseLock();
@@ -1580,7 +1731,7 @@
   function showMenu(){
     state.phase = "menu";
     state.targets = []; state.particles = []; state.ripples = []; state.floaters = [];
-    mouse.down = false; state.ads = false; state.adsZoom = 1;
+    mouseDown = false; state.ads = false; state.adsZoom = 1;
     state.assistTarget = null;
     releaseLock();
     hud.classList.remove("active");
@@ -1631,7 +1782,6 @@
     const mult = computeScoreMult(state.mode);
     const parts = [];
     parts.push(`Hitbox <b>${Math.round(s.hitScale*100)}%</b>`);
-
     if (isCombined(state.mode)){
       const subs = s.subModes || {};
       const enabled = ["gridshot","flick","precision","tracking"].filter(k=>subs[k]);
@@ -1641,7 +1791,6 @@
     } else {
       parts.push(`Static`);
     }
-
     if (s.ammo) parts.push(`<b>Ammo ON</b>`);
     if (settings.aimAssist) parts.push(`<b style="color:#fbbf24">Aim Assist</b>`);
     parts.push(`Multiplier <b>×${mult.toFixed(2)}</b>`);
@@ -1692,14 +1841,12 @@
     submodeGrid.innerHTML = "";
     const s = settings.modes[settings.currentTab];
     if (!s.subModes) return;
-
     const items = [
       { id:"gridshot",  name:"Gridshot"  },
       { id:"flick",     name:"Flick"     },
       { id:"precision", name:"Precision" },
       { id:"tracking",  name:"Tracking"  },
     ];
-
     items.forEach(it => {
       const tile = document.createElement("label");
       tile.className = "submode-tile" + (s.subModes[it.id] ? " on" : "");
@@ -1732,8 +1879,22 @@
     const isTrack = isTracking(modeId);
     const isComb = isCombined(modeId);
 
+    calibToggle.checked = settings.calibration.enabled;
+    calibSection.style.display = settings.calibration.enabled ? "" : "none";
+
+    dpiInput.value = settings.calibration.dpi;
+    cmInput.value = settings.calibration.cmPer360;
+    fovInput.value = settings.calibration.fov;
+    scopeSensSlider.value = settings.scopeSensitivity;
+    scopeSensVal.textContent = settings.scopeSensitivity.toFixed(2) + "×";
+
     sensSlider.value = settings.sensitivity;
     sensVal.textContent = settings.sensitivity.toFixed(2) + "×";
+    if (settings.calibration.enabled) {
+      sensSub.textContent = `Applied on top of ${settings.calibration.cmPer360}cm/360 calibration`;
+    } else {
+      sensSub.textContent = `Raw pixels-per-count multiplier`;
+    }
 
     shootKeyBtn.textContent = keyLabel(settings.shootKey);
     shootKeyBtn.classList.toggle("listening", listeningForBind);
@@ -1755,7 +1916,6 @@
 
     ammoToggle.checked = s.ammo;
 
-    // Sub-mode section visibility
     submodeSection.style.display = isComb ? "" : "none";
     if (isComb) buildSubmodeTiles();
 
@@ -1767,7 +1927,6 @@
     });
   }
 
-  /* ---- Bind flow ---- */
   function startBind(){
     listeningForBind = true;
     shootKeyBtn.classList.add("listening");
@@ -1817,6 +1976,40 @@
   document.addEventListener("contextmenu", (e)=>{
     if (listeningForBind){ e.preventDefault(); e.stopPropagation(); }
   }, true);
+
+  calibToggle.addEventListener("change", () => {
+    settings.calibration.enabled = calibToggle.checked;
+    refreshSettingsUI();
+  });
+
+  dpiInput.addEventListener("input", () => {
+    let v = parseInt(dpiInput.value, 10);
+    if (isNaN(v)) v = 800;
+    v = clamp(v, 100, 32000);
+    settings.calibration.dpi = v;
+  });
+  dpiInput.addEventListener("blur", () => { dpiInput.value = settings.calibration.dpi; });
+
+  cmInput.addEventListener("input", () => {
+    let v = parseFloat(cmInput.value);
+    if (isNaN(v)) v = 30;
+    v = clamp(v, 5, 120);
+    settings.calibration.cmPer360 = v;
+  });
+  cmInput.addEventListener("blur", () => { cmInput.value = settings.calibration.cmPer360; });
+
+  fovInput.addEventListener("input", () => {
+    let v = parseInt(fovInput.value, 10);
+    if (isNaN(v)) v = 103;
+    v = clamp(v, 60, 130);
+    settings.calibration.fov = v;
+  });
+  fovInput.addEventListener("blur", () => { fovInput.value = settings.calibration.fov; });
+
+  scopeSensSlider.addEventListener("input", () => {
+    settings.scopeSensitivity = parseFloat(scopeSensSlider.value);
+    scopeSensVal.textContent = settings.scopeSensitivity.toFixed(2) + "×";
+  });
 
   sensSlider.addEventListener("input", () => {
     settings.sensitivity = parseFloat(sensSlider.value);
@@ -1980,6 +2173,7 @@
     resGrade.style.color = gradeColor(grade);
     let modeLabel = cfg.name + " · " + describeConfig(state.mode);
     if (state.lockedSettings.aimAssist) modeLabel += " · AA";
+    if (settings.calibration.enabled) modeLabel += " · " + settings.calibration.cmPer360 + "cm/360";
     resMode.textContent = modeLabel;
 
     resScore.textContent = "0";
@@ -2052,6 +2246,16 @@
     const vDecay = Math.exp(-9 * dt);
     mouseVel.x *= vDecay; mouseVel.y *= vDecay;
 
+    // Aim recoil burst-reset
+    const cr = state.camRecoil;
+    if (cr.active) {
+      cr.timeSinceShot += dt;
+      if (cr.timeSinceShot > RECOIL.burstResetDelay) {
+        cr.active = false;
+        cr.climbY = 0;
+      }
+    }
+
     updateAimAssist(dt);
 
     const isSniper = MODES[state.mode].weapon === "sniper";
@@ -2065,12 +2269,9 @@
     updateEffects(dt);
 
     if (state.phase === "playing" || state.phase === "countdown"){
-      const ax = W - 90, ay = H - 70;
-      const target = Math.atan2(mouse.y - ay, mouse.x - ax);
-      if (state.gunAngle === undefined) state.gunAngle = target;
-      let diff = target - state.gunAngle;
-      while (diff >  Math.PI) diff -= Math.PI * 2;
-      while (diff < -Math.PI) diff += Math.PI * 2;
+      const gax = W - 90, gay = H - 70;
+      const target = Math.atan2(H/2 - gay, W/2 - gax);
+      const diff = angleDiff(state.gunAngle, target);
       state.gunAngle += diff * (1 - Math.exp(-30 * dt));
     }
 
@@ -2091,7 +2292,6 @@
     }
     if (state.phase !== "playing") return;
 
-    // Mobile-bypass touch detection
     if (mobileBypass && touchWatchActive && isTouchOnlyKick()){
       touchWatchActive = false;
       state.phase = "menu";
@@ -2120,6 +2320,9 @@
         SFX.expire();
       }
     }
+
+    recycleOffscreenTargets();
+
     spawnTargets();
     updateHUD();
   }
@@ -2141,7 +2344,6 @@
     }
   }
 
-  // Per-sub-mode color in combined
   function targetColors(t){
     if (t.cfg.combinedMode){
       switch (t.style){
@@ -2302,28 +2504,40 @@
 
   function drawGrid(){
     const step = 46;
+    const camGridX = Math.floor(cam.x / step) * step;
+    const camGridY = Math.floor(cam.y / step) * step;
+    const rangeX = Math.ceil(W / step / 2) + 2;
+    const rangeY = Math.ceil(H / step / 2) + 2;
+
     ctx.strokeStyle = "rgba(255,255,255,0.026)";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    const pad = 400;
-    for (let x = step/2 - pad; x < W + pad; x += step){ ctx.moveTo(x, -pad); ctx.lineTo(x, H + pad); }
-    for (let y = step/2 - pad; y < H + pad; y += step){ ctx.moveTo(-pad, y); ctx.lineTo(W + pad, y); }
+    for (let i = -rangeX; i <= rangeX; i++){
+      const x = camGridX + i * step;
+      ctx.moveTo(x, cam.y - H/2 - step);
+      ctx.lineTo(x, cam.y + H/2 + step);
+    }
+    for (let j = -rangeY; j <= rangeY; j++){
+      const y = camGridY + j * step;
+      ctx.moveTo(cam.x - W/2 - step, y);
+      ctx.lineTo(cam.x + W/2 + step, y);
+    }
     ctx.stroke();
   }
 
   function drawCrosshair(){
     if (state.adsZoom > 1.4) return;
-    const x = mouse.x, y = mouse.y;
+    const x = W/2, y = H/2;
     const ls = state.lockedSettings;
     const a = state.ammo;
 
     let onTarget = false, inLock = false;
     for (const t of state.targets){
       const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - x, t.y - y) <= hitR){ onTarget = true; break; }
-      if (t.cfg.trackingMode && mouse.down){
+      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ onTarget = true; break; }
+      if (t.cfg.trackingMode && mouseDown){
         const lockR = t.radius * ls.hitScale * t.cfg.lockRadiusFactor;
-        if (Math.hypot(t.x - x, t.y - y) <= lockR) inLock = true;
+        if (Math.hypot(t.x - cam.x, t.y - cam.y) <= lockR) inLock = true;
       }
     }
 
@@ -2561,7 +2775,7 @@
   }
 
   function drawSniperScope(z){
-    const cx = mouse.x, cy = mouse.y;
+    const cx = W/2, cy = H/2;
     const R = Math.min(W, H) * 0.36;
     const fade = Math.min(1, (z - 1) / 1.3);
 
@@ -2583,7 +2797,6 @@
 
     ctx.strokeStyle = "rgba(120,180,255,0.16)"; ctx.lineWidth = 2.5;
     ctx.beginPath(); ctx.arc(cx, cy, R*0.985, 0, Math.PI*2); ctx.stroke();
-
     ctx.strokeStyle = "rgba(255,90,120,0.11)"; ctx.lineWidth = 1.6;
     ctx.beginPath(); ctx.arc(cx, cy, R*1.008, 0, Math.PI*2); ctx.stroke();
     ctx.strokeStyle = "rgba(90,200,255,0.11)";
@@ -2617,7 +2830,7 @@
   }
 
   function drawARScope(z){
-    const cx = mouse.x, cy = mouse.y;
+    const cx = W/2, cy = H/2;
     const fade = Math.min(1, (z - 1) / 0.3);
     ctx.save();
     ctx.globalAlpha = fade;
@@ -2632,10 +2845,10 @@
     let onTarget = false, inLock = false;
     for (const t of state.targets){
       const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - cx, t.y - cy) <= hitR){ onTarget = true; break; }
-      if (t.cfg.trackingMode && mouse.down){
+      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ onTarget = true; break; }
+      if (t.cfg.trackingMode && mouseDown){
         const lockR = t.radius * ls.hitScale * t.cfg.lockRadiusFactor;
-        if (Math.hypot(t.x - cx, t.y - cy) <= lockR) inLock = true;
+        if (Math.hypot(t.x - cam.x, t.y - cam.y) <= lockR) inLock = true;
       }
     }
     const a = state.ammo;
@@ -2716,15 +2929,17 @@
     ctx.drawImage(bgCanvas, 0, 0, W, H);
 
     ctx.save();
-    const z = state.adsZoom;
-    if (z > 1.001){
-      ctx.translate(mouse.x, mouse.y);
-      ctx.scale(z, z);
-      ctx.translate(-mouse.x, -mouse.y);
+    ctx.translate(W/2 - cam.x, H/2 - cam.y);
+
+    if (state.adsZoom > 1.001){
+      ctx.translate(cam.x, cam.y);
+      ctx.scale(state.adsZoom, state.adsZoom);
+      ctx.translate(-cam.x, -cam.y);
     }
     if (state.shake > 0.1){
       ctx.translate((Math.random()-0.5)*state.shake, (Math.random()-0.5)*state.shake);
     }
+
     drawGrid();
     for (const t of state.targets) drawTarget(t);
     drawEffects();
@@ -2775,16 +2990,14 @@
   }
 
   /* =========================================================
-     LOOP — with FPS cap + counter
+     LOOP
      ========================================================= */
   let lastT = performance.now();
   let lastRenderT = lastT;
   let fpsAccum = 0;
   let fpsFrames = 0;
-  let fpsDisplayed = 60;
 
   function frame(now){
-    // FPS cap — skip frames if we're running ahead of schedule
     if (settings.fpsCap > 0){
       const minInterval = 1000 / settings.fpsCap;
       if (now - lastRenderT < minInterval - 0.5){
@@ -2792,16 +3005,14 @@
         return;
       }
     }
-
     const dt = Math.min((now - lastT) / 1000, 0.05);
     lastT = now;
     lastRenderT = now;
 
-    // FPS counting
     fpsFrames++;
     fpsAccum += dt;
     if (fpsAccum >= 0.4){
-      fpsDisplayed = Math.round(fpsFrames / fpsAccum);
+      const fpsDisplayed = Math.round(fpsFrames / fpsAccum);
       fpsFrames = 0;
       fpsAccum = 0;
       fpsCounter.querySelector("b").textContent = fpsDisplayed;
@@ -2822,37 +3033,45 @@
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   }
 
+  let lastPointerX = 0, lastPointerY = 0, haveLastPointer = false;
+
   document.addEventListener("pointerlockchange", () => {
     pointerLocked = (document.pointerLockElement === canvas);
     if (pointerLocked){
-      mouse.x = W/2; mouse.y = H/2;
       mouseVel.x = 0; mouseVel.y = 0;
+      haveLastPointer = false;
     }
   });
 
   canvas.addEventListener("pointermove", (e) => {
-    // Count real mouse events for mobile detection
-    if (e.pointerType === "mouse" && e.movementX !== 0 || e.movementY !== 0){
-      realMouseEvents++;
-    }
     if (e.pointerType === "mouse") realMouseEvents++;
 
     if (pointerLocked){
-      const s = settings.sensitivity;
-      const dx = e.movementX * s;
-      const dy = e.movementY * s;
+      const k = worldUnitsPerCount();
+      const dx = e.movementX * k;
+      const dy = e.movementY * k;
       mouseVel.x += dx * 0.28;
       mouseVel.y += dy * 0.28;
-      mouse.x = clamp(mouse.x + dx, 0, W);
-      mouse.y = clamp(mouse.y + dy, 0, H);
+      cam.x += dx;
+      cam.y += dy;
     } else {
       const p = pointerPos(e);
-      const dx = p.x - mouse.x, dy = p.y - mouse.y;
-      mouseVel.x += dx * 0.28;
-      mouseVel.y += dy * 0.28;
-      mouse.x = p.x; mouse.y = p.y;
+      if (!haveLastPointer){
+        lastPointerX = p.x; lastPointerY = p.y;
+        haveLastPointer = true;
+        return;
+      }
+      if (state.phase === "playing"){
+        const dx = p.x - lastPointerX;
+        const dy = p.y - lastPointerY;
+        const k = 1.2 * settings.sensitivity * 0.35;
+        cam.x += dx * k;
+        cam.y += dy * k;
+        mouseVel.x += dx * k * 0.28;
+        mouseVel.y += dy * k * 0.28;
+      }
+      lastPointerX = p.x; lastPointerY = p.y;
     }
-    mouse.inside = true;
   });
 
   canvas.addEventListener("pointerdown", (e) => {
@@ -2861,33 +3080,27 @@
     SFX.init();
 
     if (!pointerLocked && state.phase === "playing") tryLock();
-    if (!pointerLocked){
-      const p = pointerPos(e);
-      mouse.x = p.x; mouse.y = p.y;
-      mouse.inside = true;
-    }
 
-    if (e.button === 2){
+    if (e.button === 2 && !isMouseShoot(2)){
       if (!(state.ammo.enabled && state.ammo.reloading)) state.ads = true;
     }
 
     if (state.phase === "playing" && isMouseShoot(e.button)){
-      mouse.down = true;
+      mouseDown = true;
       const cfg = MODES[state.mode];
       if (!cfg.trackingMode) shoot();
     } else if (state.phase !== "playing" && isMouseShoot(e.button)){
-      mouse.down = true;
+      mouseDown = true;
     }
   });
 
   window.addEventListener("pointerup", (e)=>{
-    if (e.button === 2){ state.ads = false; return; }
-    if (isMouseShoot(e.button) || e.button === 0 || e.button === undefined) mouse.down = false;
+    if (e.button === 2 && !isMouseShoot(2)){ state.ads = false; return; }
+    if (isMouseShoot(e.button) || e.button === 0 || e.button === undefined) mouseDown = false;
   });
-  window.addEventListener("pointercancel", ()=>{ mouse.down = false; state.ads = false; });
-  window.addEventListener("blur", ()=>{ mouse.down = false; state.ads = false; });
+  window.addEventListener("pointercancel", ()=>{ mouseDown = false; state.ads = false; });
+  window.addEventListener("blur", ()=>{ mouseDown = false; state.ads = false; });
   canvas.addEventListener("contextmenu", (e)=> e.preventDefault());
-  canvas.addEventListener("pointerleave", ()=>{ mouse.inside = false; });
 
   /* =========================================================
      KEYBOARD
@@ -2896,7 +3109,7 @@
     if (listeningForBind) return;
     if (state.phase === "playing" && isKeyShoot(e)){
       e.preventDefault();
-      mouse.down = true;
+      mouseDown = true;
       if (!e.repeat){
         const cfg = MODES[state.mode];
         if (!cfg.trackingMode) shoot();
@@ -2937,7 +3150,7 @@
   });
 
   window.addEventListener("keyup", (e)=>{
-    if (isKeyShoot(e)) mouse.down = false;
+    if (isKeyShoot(e)) mouseDown = false;
     if (e.key === "Shift") state.ads = false;
   });
 
@@ -3027,17 +3240,12 @@
   updateDiffHint();
   resize();
 
-  mouse.x = W/2; mouse.y = H/2;
-
-  // Mobile detect
-  mobileDetected = detectMobile();
-  if (mobileDetected){
+  if (detectMobile()){
     showMobileBlock();
     startTouchWatch();
   }
 
-  requestAnimationFrame((t)=>{ lastT = t; lastRenderTimeInit(t); requestAnimationFrame(frame); });
-  function lastRenderTimeInit(t){ lastRenderT = t; }
+  requestAnimationFrame((t)=>{ lastT = t; lastRenderT = t; requestAnimationFrame(frame); });
 })();
 </script>
 </body>
