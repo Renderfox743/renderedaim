@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Aim Trainer — Reflex & Precision</title>
+<title>Aim Trainer — 3D Reflex & Precision</title>
 <style>
   :root{--bg:#05070c;--text:#e9eefb;--muted:#8b95ad;--accent:#38bdf8}
   *{margin:0;padding:0;box-sizing:border-box}
@@ -140,15 +140,7 @@
   input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
   input[type="range"]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#6366f1);cursor:pointer;box-shadow:0 0 12px rgba(56,189,248,.7)}
   input[type="range"]::-moz-range-track{height:4px;background:rgba(255,255,255,.1);border-radius:2px;border:none}
-  input[type="number"]{
-    width:100%;padding:9px 12px;border-radius:10px;
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.12);
-    color:#fff;font:inherit;font-size:13px;font-weight:600;
-    font-family:ui-monospace,Menlo,monospace;
-    font-variant-numeric:tabular-nums;
-    outline:none;transition:all .15s ease;
-  }
+  input[type="number"]{width:100%;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font:inherit;font-size:13px;font-weight:600;font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;outline:none;transition:all .15s ease}
   input[type="number"]:focus{border-color:#38bdf8;background:rgba(56,189,248,.06);box-shadow:0 0 0 3px rgba(56,189,248,.14)}
   .switch{position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;justify-self:start}
   .switch input{opacity:0;width:0;height:0;position:absolute}
@@ -305,7 +297,7 @@
           </svg>
         </div>
         <h1>Aim <em>Trainer</em></h1>
-        <p class="tagline">Infinite plane · cm/360 calibration · aim recoil · edge spawns</p>
+        <p class="tagline">True 3D perspective · cm/360 · depth-aware targets · AR recoil</p>
       </div>
 
       <div class="modes" id="modeList"></div>
@@ -326,7 +318,7 @@
 
       <div class="hint">
         <kbd>1</kbd>–<kbd>5</kbd> modes &nbsp;·&nbsp; <kbd>Space</kbd> start &nbsp;·&nbsp; <kbd>R</kbd> restart / reload &nbsp;·&nbsp; <kbd>Esc</kbd> menu &nbsp;·&nbsp; <kbd>M</kbd> mute<br/>
-        Crosshair at screen center · world scrolls · <b>cm/360° calibrated</b> · AR tracking has <b>aim recoil</b>
+        Move the mouse to rotate the camera · <b>right-click</b> / <kbd>Shift</kbd> to scope · AR tracking has <b>aim recoil</b>
       </div>
     </div>
   </div>
@@ -359,18 +351,17 @@
             <div class="setting-value">cm</div>
           </div>
           <div class="setting-row">
-            <div class="setting-label">Game FOV<small>Horizontal FOV (used to scale world-per-degree)</small></div>
+            <div class="setting-label">Game FOV<small>Horizontal FOV — affects how much you see, not sens</small></div>
             <input type="number" id="fovInput" min="60" max="130" step="1" value="103">
             <div class="setting-value">°</div>
           </div>
           <div class="setting-row">
-            <div class="setting-label">Scoped Sens Multiplier<small>1.00 = screen-consistent; &lt;1 = finer control when zoomed</small></div>
+            <div class="setting-label">Scoped Sens Multiplier<small>1.00 = same cm/360; &lt;1 = finer when zoomed</small></div>
             <input type="range" id="scopeSensSlider" min="0.50" max="1.20" step="0.05" value="1.00">
             <div class="setting-value" id="scopeSensVal">1.00×</div>
           </div>
           <div style="font-size:11px;color:var(--muted);line-height:1.7;padding:4px 0 6px;opacity:.8">
-            Formula: <span style="font-family:ui-monospace,Menlo,monospace;color:#cfd8ea">worldUnitsPerCount = (360 / FOV) × screenWidth / ((cmPer360 / 2.54) × DPI)</span><br/>
-            Scoped: multiplied by <span style="font-family:ui-monospace,Menlo,monospace;color:#cfd8ea">scopeSens / adsZoom</span>.
+            Sensitivity is now in true radians-per-count: <span style="font-family:ui-monospace,Menlo,monospace;color:#cfd8ea">rad/count = 2π / ((cmPer360 / 2.54) × DPI)</span>.
           </div>
         </div>
 
@@ -394,7 +385,7 @@
         </div>
 
         <div class="setting-row">
-          <div class="setting-label">Aim Assist<small>Glides cursor toward targets when scoped. Trains a reflex you don't want in ranked.</small></div>
+          <div class="setting-label">Aim Assist<small>Rotates camera toward targets when scoped. Trains a reflex you don't want in ranked.</small></div>
           <label class="switch assist"><input type="checkbox" id="aimAssistToggle"><span></span></label>
           <div class="setting-value"></div>
         </div>
@@ -409,7 +400,7 @@
         </div>
 
         <div class="setting-row">
-          <div class="setting-label">Hitbox Size<small>Smaller = harder</small></div>
+          <div class="setting-label">Hitbox Size<small>Scales target radius; smaller = harder</small></div>
           <input type="range" id="hitScaleSlider" min="0.30" max="1.80" step="0.05">
           <div class="setting-value" id="hitScaleVal">100%</div>
         </div>
@@ -478,12 +469,17 @@
      ========================================================= */
   function detectMobile() {
     const ua = navigator.userAgent || "";
-    const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet|PlayBook|Silk/i.test(ua);
-    const touchHeavy = (navigator.maxTouchPoints || 0) > 1
-                    && !window.matchMedia("(pointer: fine)").matches;
-    const smallScreen = Math.min(window.screen.width, window.screen.height) < 600
-                     && (navigator.maxTouchPoints || 0) > 0;
-    return mobileUA || touchHeavy || smallScreen;
+    const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile Safari|Tablet|PlayBook|Silk/i.test(ua);
+    const desktopUA = /Windows NT|Macintosh|X11|CrOS/i.test(ua);
+    if (desktopUA && !mobileUA) return false;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const noHover      = window.matchMedia("(hover: none)").matches;
+    const multiTouch   = (navigator.maxTouchPoints || 0) > 1;
+    const smallViewport = Math.min(window.innerWidth, window.innerHeight) < 500;
+    const touchPrimary = coarsePointer && noHover;
+    if (mobileUA && multiTouch) return true;
+    if (touchPrimary && multiTouch && smallViewport) return true;
+    return false;
   }
 
   const mobileBlockEl = document.getElementById("mobileBlock");
@@ -492,6 +488,7 @@
   const blockBypass   = document.getElementById("blockBypass");
 
   let mobileBypass = false;
+  let rescueCleanup = null;
 
   function showMobileBlock(title, msg) {
     blockTitle.textContent = title || "Mouse & Keyboard Required";
@@ -501,11 +498,37 @@
     settingsEl.classList.remove("show");
     resultsEl.classList.remove("show");
     hud.classList.remove("active");
+
+    // Clean up any prior rescue listener before attaching a new one
+    if (rescueCleanup) { rescueCleanup(); rescueCleanup = null; }
+
+    let rescueTimer = null;
+    const rescue = (ev) => {
+      if (!ev || ev.pointerType !== "mouse") return;
+      if (rescueTimer) return;
+      rescueTimer = setTimeout(() => {
+        if (mobileBlockEl.classList.contains("show") && !mobileBypass) {
+          mobileBypass = true;
+          hideMobileBlock();
+          menuEl.classList.add("show");
+          startTouchWatch();
+        }
+        cleanup();
+      }, 1200);
+    };
+    const cleanup = () => {
+      document.removeEventListener("pointermove", rescue);
+      if (rescueTimer) { clearTimeout(rescueTimer); rescueTimer = null; }
+      if (rescueCleanup === cleanup) rescueCleanup = null;
+    };
+    rescueCleanup = cleanup;
+    document.addEventListener("pointermove", rescue, { passive: true });
   }
   function hideMobileBlock() { mobileBlockEl.classList.remove("show"); }
 
   blockBypass.addEventListener("click", () => {
     mobileBypass = true;
+    if (rescueCleanup) { rescueCleanup(); rescueCleanup = null; }
     hideMobileBlock();
     menuEl.classList.add("show");
     startTouchWatch();
@@ -544,33 +567,33 @@
   const MODES = {
     gridshot: {
       id:"gridshot", name:"Gridshot",
-      desc:"Six static targets, enforced min distance from crosshair.",
+      desc:"Six targets across the viewport, varying depth.",
       meta:"60s · 6 targets · sniper",
-      duration:60, maxTargets:6, radius:44, points:100,
+      duration:60, maxTargets:6, radius:0.55, points:100,
       color:"#22d3ee", color2:"#0891b2", par:9000, weapon:"sniper",
-      minFromCamera: 180,
+      minScreenFromCenter: 180,
     },
     flick: {
       id:"flick", name:"Flick",
-      desc:"Single target at random angle and distance from crosshair.",
+      desc:"Single target at random screen angle and depth.",
       meta:"60s · single target · sniper",
-      duration:60, maxTargets:1, radius:38, points:150,
+      duration:60, maxTargets:1, radius:0.50, points:150,
       color:"#fb7185", color2:"#be123c", par:11500, weapon:"sniper",
       angleSpawn: true,
     },
     precision: {
       id:"precision", name:"Precision",
-      desc:"Tiny targets with unpredictable lifetimes.",
+      desc:"Tiny targets at unpredictable depths and lifetimes.",
       meta:"45s · small & fast · sniper",
-      duration:45, maxTargets:1, radius:20, points:260,
+      duration:45, maxTargets:1, radius:0.25, points:260,
       color:"#fbbf24", color2:"#d97706", par:9500, weapon:"sniper",
       variableLife: true,
     },
     tracking: {
       id:"tracking", name:"Tracking",
-      desc:"Hold shoot on a wandering target. AR has aim recoil you must compensate.",
+      desc:"Hold shoot on a 3D-wandering target. AR has recoil you must compensate.",
       meta:"30s · hold to lock · AR recoil",
-      duration:30, maxTargets:1, radius:54, points:0,
+      duration:30, maxTargets:1, radius:0.65, points:0,
       dps:250, lockRadiusFactor:0.55,
       color:"#a78bfa", color2:"#6d28d9", par:4200, weapon:"ar",
       trackingMode: true,
@@ -579,7 +602,7 @@
       id:"combined", name:"Combined",
       desc:"Mix every chosen sub-mode into one run. Sniper only.",
       meta:"60s · custom mix · sniper",
-      duration:60, maxTargets:4, radius:36, points:130,
+      duration:60, maxTargets:4, radius:0.5, points:130,
       color:"#f472b6", color2:"#be185d", par:11000, weapon:"sniper",
       combinedMode: true,
     },
@@ -632,12 +655,11 @@
   const AIM_ASSIST_PENALTY = 0.55;
   const SPAWN_ANIM_MS = 160;
 
-  // AR aim recoil parameters
   const RECOIL = {
-    kickY: 2.6,           // upward world-units per shot
-    kickXJitter: 1.0,     // ± horizontal wander per shot
-    maxClimb: 150,        // cap per burst
-    burstResetDelay: 1.2, // seconds of no-fire before a new baseline
+    kickPitch: 0.0055,
+    kickYawJitter: 0.0025,
+    maxClimbRad: 0.30,
+    burstResetDelay: 1.2,
   };
 
   function isTracking(modeId)   { return !!MODES[modeId].trackingMode; }
@@ -863,19 +885,19 @@
      VIEWPORT
      ========================================================= */
   let W=1, H=1, DPR=1;
-  const bgCanvas = document.createElement("canvas");
 
-  function buildBackground(){
-    bgCanvas.width  = Math.max(1, Math.round(W * DPR));
-    bgCanvas.height = Math.max(1, Math.round(H * DPR));
-    const b = bgCanvas.getContext("2d");
-    b.setTransform(DPR,0,0,DPR,0,0);
-    const g = b.createRadialGradient(W*0.5,H*0.32,0,W*0.5,H*0.5,Math.max(W,H)*0.85);
-    g.addColorStop(0,"#0c1120"); g.addColorStop(0.5,"#070911"); g.addColorStop(1,"#030409");
-    b.fillStyle = g; b.fillRect(0,0,W,H);
-    const g2 = b.createRadialGradient(W/2,-H*0.15,0,W/2,-H*0.15,Math.max(W,H)*0.75);
-    g2.addColorStop(0,"rgba(56,189,248,0.10)"); g2.addColorStop(1,"rgba(56,189,248,0)");
-    b.fillStyle = g2; b.fillRect(0,0,W,H);
+  let hFovRad = 103 * Math.PI / 180;
+  let vFovRad = 0;
+  let screenScale = 0;
+  let tanHalfH = 0;
+  let tanHalfV = 0;
+
+  function updateFovCache() {
+    hFovRad = settings.calibration.fov * Math.PI / 180;
+    tanHalfH = Math.tan(hFovRad / 2);
+    screenScale = (W / 2) / tanHalfH;
+    vFovRad = 2 * Math.atan(tanHalfH * H / W);
+    tanHalfV = Math.tan(vFovRad / 2);
   }
 
   function resize(){
@@ -885,7 +907,7 @@
     H = Math.max(1, rect.height);
     canvas.width  = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
-    buildBackground();
+    updateFovCache();
   }
 
   /* =========================================================
@@ -921,6 +943,78 @@
   }
 
   /* =========================================================
+     3D MATH
+     ========================================================= */
+  let _cy = 1, _sy = 0, _cp = 1, _sp = 0;
+  function updateCamCache() {
+    _cy = Math.cos(state.yaw);
+    _sy = Math.sin(state.yaw);
+    _cp = Math.cos(state.pitch);
+    _sp = Math.sin(state.pitch);
+  }
+
+  function worldToCamera(wx, wy, wz) {
+    const x1 = wx * _cy - wz * _sy;
+    const z1 = wx * _sy + wz * _cy;
+    return {
+      x: x1,
+      y: wy * _cp - z1 * _sp,
+      z: wy * _sp + z1 * _cp,
+    };
+  }
+
+  // FIX 1: current screen scale accounts for ADS zoom
+  function currentScreenScale() {
+    return state.adsZoom > 1.01 ? screenScale * state.adsZoom : screenScale;
+  }
+
+  function cameraToScreen(cx, cy_, cz) {
+    const ss = currentScreenScale();
+    return {
+      x: W/2 + (cx / cz) * ss,
+      y: H/2 - (cy_ / cz) * ss,
+    };
+  }
+
+  function project(wx, wy, wz, near) {
+    near = near || 0.1;
+    const c = worldToCamera(wx, wy, wz);
+    if (c.z < near) return null;
+    const ss = currentScreenScale();
+    return {
+      x: W/2 + (c.x / c.z) * ss,
+      y: H/2 - (c.y / c.z) * ss,
+      z: c.z,
+      scale: ss / c.z,
+    };
+  }
+
+  // spawnAtScreen uses RAW screenScale — spawn positions are defined in hipfire coords
+  function spawnAtScreen(sx, sy, depth) {
+    const camX = (sx - W/2) * depth / screenScale;
+    const camY = -(sy - H/2) * depth / screenScale;
+    const camZ = depth;
+
+    const cy = Math.cos(state.yaw), sy_ = Math.sin(state.yaw);
+    const cp = Math.cos(state.pitch), sp = Math.sin(state.pitch);
+
+    const wx = camX * cy + camY * (-sy_*sp) + camZ * (sy_*cp);
+    const wy = camX * 0  + camY * cp        + camZ * sp;
+    const wz = camX * (-sy_) + camY * (-cy*sp) + camZ * (cy*cp);
+
+    return { x: wx, y: wy, z: wz };
+  }
+
+  function isInView(wx, wy, wz, padding) {
+    padding = padding || 1.1;
+    const c = worldToCamera(wx, wy, wz);
+    if (c.z < 0.3) return false;
+    if (Math.abs(c.x / c.z) > tanHalfH * padding) return false;
+    if (Math.abs(c.y / c.z) > tanHalfV * padding) return false;
+    return true;
+  }
+
+  /* =========================================================
      STATE
      ========================================================= */
   const state = {
@@ -931,11 +1025,13 @@
     shake:0, hitMarker:0, crossKick:0,
     countdown:0, goFlash:0,
     lockMeter:0, trackTime:0, trackHeld:0, lockFlash:0,
-    gunAngle:0, recoil:0, muzzle:0,
+    recoil: 0, muzzle: 0,
     ads:false, adsZoom:1,
     movement: { type:"none", aggression:0 },
     lockedSettings: null,
     assistTarget: null,
+    yaw: 0,
+    pitch: 0,
     ammo: {
       enabled: false, inMag: 0, magSize: 0,
       reloading:false, reloadTime:0, reloadDuration:0, isTactical:false,
@@ -944,16 +1040,11 @@
     },
     camRecoil: {
       active: false,
-      baselineX: 0,
-      baselineY: 0,
       timeSinceShot: 999,
-      climbY: 0,
     },
   };
 
-  const cam = { x: 0, y: 0 };
   const mouseVel = { x:0, y:0 };
-
   let pointerLocked = false;
   let listeningForBind = false;
   let mouseDown = false;
@@ -961,15 +1052,14 @@
   /* =========================================================
      SENSITIVITY
      ========================================================= */
-  function worldUnitsPerCount() {
+  function radiansPerCount() {
     let base;
     if (!settings.calibration.enabled) {
-      base = 1.2 * settings.sensitivity;
+      base = 0.0033 * settings.sensitivity;
     } else {
-      const { dpi, cmPer360, fov } = settings.calibration;
+      const { dpi, cmPer360 } = settings.calibration;
       const countsPer360 = (cmPer360 / 2.54) * dpi;
-      const worldUnitsPer360 = (360 / fov) * W;
-      base = (worldUnitsPer360 / countsPer360) * settings.sensitivity;
+      base = (2 * Math.PI / countsPer360) * settings.sensitivity;
     }
     if (state.ads && state.adsZoom > 1.01) {
       return base * settings.scopeSensitivity / state.adsZoom;
@@ -1035,22 +1125,14 @@
   }
 
   /* =========================================================
-     AIM RECOIL (AR tracking)
+     AIM RECOIL
      ========================================================= */
   function applyAimRecoil() {
     const cr = state.camRecoil;
-    if (!cr.active) {
-      cr.active = true;
-      cr.baselineX = cam.x;
-      cr.baselineY = cam.y;
-    }
+    cr.active = true;
     cr.timeSinceShot = 0;
-    const climbed = cr.baselineY - cam.y;
-    if (climbed < RECOIL.maxClimb) {
-      cam.y -= RECOIL.kickY;
-      cam.x += (Math.random() - 0.5) * 2 * RECOIL.kickXJitter;
-      cr.climbY = cr.baselineY - cam.y;
-    }
+    state.pitch += RECOIL.kickPitch;
+    state.yaw += (Math.random() - 0.5) * 2 * RECOIL.kickYawJitter;
     state.shake = Math.min(state.shake + 0.9, 7);
   }
 
@@ -1058,10 +1140,10 @@
      TARGET
      ========================================================= */
   class Target {
-    constructor(cfg, wx, wy, r, life, movement, style){
+    constructor(cfg, wx, wy, wz, worldR, life, movement, style){
       this.cfg = cfg;
-      this.x = wx; this.y = wy;
-      this.r = r; this.maxR = r;
+      this.x = wx; this.y = wy; this.z = wz;
+      this.r = worldR; this.maxR = worldR;
       this.life = life || 0;
       this.bornAt = performance.now();
       this.age = 0; this.spawnT = 0;
@@ -1076,20 +1158,22 @@
 
       this.trail = [];
       this.trailTick = 0;
-      this.trailInterval = 0.028;
+      this.trailInterval = 0.045;
 
-      if (this.movement.type === "orbital"){
-        this.angle  = Math.random() * Math.PI * 2;
-        this.phase1 = Math.random() * 10;
-        this.phase2 = Math.random() * 10;
-        this.phase3 = Math.random() * 10;
-      } else if (this.movement.type === "strafe"){
-        this.vx=0; this.vy=0; this.tvx=0; this.tvy=0;
-        this.nextTurn = 0.1 + Math.random() * 0.5;
-        this.wanderPhase = Math.random() * 100;
-        this.dashCooldown = 0.8 + Math.random() * 1.6;
-        this.dashTime = 0; this.dashVx = 0; this.dashVy = 0;
-      }
+      this.vx = 0; this.vy = 0; this.vz = 0;
+      this.tvx = 0; this.tvy = 0; this.tvz = 0;
+
+      this.angle = Math.random() * Math.PI * 2;
+      this.elevation = (Math.random() - 0.5) * 0.6;
+      this.phase1 = Math.random() * 10;
+      this.phase2 = Math.random() * 10;
+      this.phase3 = Math.random() * 10;
+
+      this.nextTurn = 0.1 + Math.random() * 0.5;
+      this.wanderPhase = Math.random() * 100;
+      this.dashCooldown = 0.8 + Math.random() * 1.6;
+      this.dashTime = 0;
+      this.dashVx = 0; this.dashVy = 0; this.dashVz = 0;
     }
 
     get scale(){
@@ -1097,33 +1181,45 @@
       const c1 = 1.70158, c3 = c1 + 1;
       return 1 + c3 * Math.pow(t-1,3) + c1 * Math.pow(t-1,2);
     }
-    get radius(){ return Math.max(0.5, this.r * this.scale); }
+    get radius(){ return Math.max(0.01, this.r * this.scale); }
 
     updateOrbital(dt){
       const ag = this.aggression;
       this.phase1 += dt * (0.95 + ag * 0.6);
       this.phase2 += dt * (0.55 + ag * 0.35);
       this.phase3 += dt * (0.75 + ag * 0.45);
-      const turn = Math.sin(this.phase1) * (1.7 + ag * 0.8)
-                 + Math.sin(this.phase2 * 1.7 + 1.3) * (1.05 + ag * 0.55);
-      this.angle += turn * dt;
 
-      const dx = this.x - cam.x, dy = this.y - cam.y;
-      const d = Math.hypot(dx, dy);
-      const maxR = Math.min(W, H) * 0.6;
-      if (d > maxR){
-        const toCam = Math.atan2(-dy, -dx);
-        this.angle += angleDiff(this.angle, toCam) * dt * 3.5;
+      const turnA = Math.sin(this.phase1) * (1.4 + ag * 0.7);
+      const turnE = Math.sin(this.phase2 * 1.7 + 1.3) * (0.9 + ag * 0.5);
+      this.angle += turnA * dt;
+      this.elevation += turnE * dt;
+      this.elevation = clamp(this.elevation, -0.7, 0.7);
+
+      const base = 2.5 + ag * 3;
+      const spd = base + Math.sin(this.phase3) * (0.8 + ag * 0.7);
+
+      const cosE = Math.cos(this.elevation);
+      this.vx = Math.cos(this.angle) * cosE * spd;
+      this.vy = Math.sin(this.elevation) * spd;
+      this.vz = Math.sin(this.angle) * cosE * spd;
+
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      this.z += this.vz * dt;
+
+      const dist = Math.hypot(this.x, this.y, this.z);
+      const inView = isInView(this.x, this.y, this.z, 1.4);
+      if (dist < 4 || dist > 30 || !inView){
+        const fy = Math.sin(state.pitch);
+        const fz = Math.cos(state.pitch);
+        const fx = Math.sin(state.yaw) * fz;
+        const fz2 = Math.cos(state.yaw) * fz;
+        const tx = fx * 12, ty = fy * 12, tz = fz2 * 12;
+        const k = dt * 2.2;
+        this.x += (tx - this.x) * k;
+        this.y += (ty - this.y) * k;
+        this.z += (tz - this.z) * k;
       }
-
-      const base = 150 + ag * 170;
-      const spd = base + Math.sin(this.phase3) * (55 + ag * 40)
-                       + Math.sin(this.phase2 * 0.6) * (30 + ag * 20);
-      this.x += Math.cos(this.angle) * spd * dt;
-      this.y += Math.sin(this.angle) * spd * dt;
-
-      while (this.angle >  Math.PI*2) this.angle -= Math.PI*2;
-      while (this.angle < -Math.PI*2) this.angle += Math.PI*2;
     }
 
     updateStrafe(dt){
@@ -1131,30 +1227,25 @@
       this.wanderPhase += dt * (1.6 + ag * 1.4);
       this.nextTurn -= dt;
 
-      const dx = this.x - cam.x, dy = this.y - cam.y;
-      const d = Math.hypot(dx, dy);
-      const maxR = Math.min(W, H) * 0.75;
-
-      if (d > maxR) {
-        const toCam = Math.atan2(-dy, -dx);
-        const speed = Math.max(180, 70 + ag * 260);
-        this.tvx = Math.cos(toCam) * speed;
-        this.tvy = Math.sin(toCam) * speed;
-        this.nextTurn = 1.2;
-      } else if (this.nextTurn <= 0){
+      if (this.nextTurn <= 0){
         const a = Math.random() * Math.PI * 2;
-        const baseSpeed = 70 + ag * 260;
-        const speed = baseSpeed * (0.55 + Math.random() * 0.95);
-        this.tvx = Math.cos(a) * speed;
-        this.tvy = Math.sin(a) * speed;
+        const e = (Math.random() - 0.5) * 0.9;
+        const baseSpeed = 2 + ag * 6;
+        const speed = baseSpeed * (0.5 + Math.random() * 1);
+        this.tvx = Math.cos(a) * Math.cos(e) * speed;
+        this.tvy = Math.sin(e) * speed * 0.4;
+        this.tvz = Math.sin(a) * Math.cos(e) * speed;
         this.nextTurn = 0.28 + Math.random() * 0.85 - ag * 0.18;
       }
 
       const k = 1 - Math.exp(-(3 + ag * 5) * dt);
       this.vx += (this.tvx - this.vx) * k;
       this.vy += (this.tvy - this.vy) * k;
-      const wx = Math.sin(this.wanderPhase) * (25 + ag * 55);
-      const wy = Math.cos(this.wanderPhase * 1.37 + 1.1) * (25 + ag * 55);
+      this.vz += (this.tvz - this.vz) * k;
+
+      const wx = Math.sin(this.wanderPhase) * (0.7 + ag * 1.4);
+      const wy = Math.cos(this.wanderPhase * 1.37 + 1.1) * (0.5 + ag * 1.0);
+      const wz = Math.sin(this.wanderPhase * 0.73 + 2.1) * (0.7 + ag * 1.4);
 
       if (this.dashTime > 0){ this.dashTime -= dt; }
       else {
@@ -1162,16 +1253,32 @@
         if (this.dashCooldown <= 0 && ag > 0.4){
           this.dashTime = 0.14 + Math.random() * 0.14;
           const a = Math.random() * Math.PI * 2;
-          const burst = 260 + ag * 480;
-          this.dashVx = Math.cos(a) * burst;
-          this.dashVy = Math.sin(a) * burst;
+          const e = (Math.random() - 0.5) * 0.9;
+          const burst = 6 + ag * 14;
+          this.dashVx = Math.cos(a) * Math.cos(e) * burst;
+          this.dashVy = Math.sin(e) * burst * 0.4;
+          this.dashVz = Math.sin(a) * Math.cos(e) * burst;
           this.dashCooldown = 1.1 + Math.random() * 2.4 - ag * 0.55;
         }
       }
 
-      let mx = this.vx + wx, my = this.vy + wy;
-      if (this.dashTime > 0){ mx += this.dashVx; my += this.dashVy; }
-      this.x += mx * dt; this.y += my * dt;
+      let mx = this.vx + wx, my = this.vy + wy, mz = this.vz + wz;
+      if (this.dashTime > 0){ mx += this.dashVx; my += this.dashVy; mz += this.dashVz; }
+
+      this.x += mx * dt;
+      this.y += my * dt;
+      this.z += mz * dt;
+
+      // FIX 2: soft-restore for strafe targets when they drift or go out of view
+      const dist = Math.hypot(this.x, this.y, this.z);
+      if (dist > 28 || !isInView(this.x, this.y, this.z, 1.5)) {
+        const fy = Math.sin(state.pitch), fz = Math.cos(state.pitch);
+        const fx = Math.sin(state.yaw) * fz, fz2 = Math.cos(state.yaw) * fz;
+        const k2 = dt * 2.0;
+        this.x += (fx * 14 - this.x) * k2;
+        this.y += (fy * 14 - this.y) * k2;
+        this.z += (fz2 * 14 - this.z) * k2;
+      }
     }
 
     updateTrail(dt){
@@ -1179,8 +1286,8 @@
       this.trailTick -= dt;
       if (this.trailTick <= 0){
         this.trailTick = this.trailInterval;
-        this.trail.push({ x:this.x, y:this.y, r:this.r, age:0, life:0.34 });
-        if (this.trail.length > 16) this.trail.shift();
+        this.trail.push({ x:this.x, y:this.y, z:this.z, r:this.r, age:0, life:0.4 });
+        if (this.trail.length > 14) this.trail.shift();
       }
       for (let i = this.trail.length-1; i >= 0; i--){
         const p = this.trail[i];
@@ -1199,9 +1306,8 @@
       this.updateTrail(dt);
 
       if (!this.moving) {
-        const sx = this.x - cam.x, sy = this.y - cam.y;
-        const onScreen = Math.abs(sx) < W/2 + this.r && Math.abs(sy) < H/2 + this.r;
-        if (onScreen) this.offscreenTime = 0;
+        const inView = isInView(this.x, this.y, this.z, 1.15);
+        if (inView) this.offscreenTime = 0;
         else this.offscreenTime += dt;
       }
 
@@ -1216,21 +1322,29 @@
   /* =========================================================
      EFFECTS
      ========================================================= */
-  function burst(x,y,color,radius,count){
-    const n = count || Math.round(12 + radius * 0.18);
+  function burst(wx, wy, wz, color, radius, count){
+    const n = count || Math.round(12 + radius * 30);
     for (let i=0;i<n;i++){
       const a = Math.random() * Math.PI * 2;
-      const sp = 110 + Math.random() * 400;
+      const e = (Math.random() - 0.5) * Math.PI;
+      const sp = (2 + Math.random() * 6) * (0.6 + radius);
       state.particles.push({
-        x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
-        age:0, life:0.35 + Math.random()*0.45,
-        size:1.4 + Math.random()*3.2,
+        x: wx, y: wy, z: wz,
+        vx: Math.cos(a) * Math.cos(e) * sp,
+        vy: Math.sin(e) * sp,
+        vz: Math.sin(a) * Math.cos(e) * sp,
+        age:0, life:0.4 + Math.random()*0.5,
+        size:1.5 + Math.random()*3.5,
         color: Math.random()<0.45 ? "#ffffff" : color,
       });
     }
   }
-  function addRipple(x,y,color,maxR,life){ state.ripples.push({x,y,color,maxR,life:life||0.45,age:0}); }
-  function addFloater(x,y,text,color){ state.floaters.push({x,y,text,color,age:0,life:0.85}); }
+  function addRipple(wx, wy, wz, color, worldR, life){
+    state.ripples.push({x:wx, y:wy, z:wz, color, worldR, life:life||0.5, age:0});
+  }
+  function addFloater(wx, wy, wz, text, color){
+    state.floaters.push({x:wx, y:wy, z:wz, text, color, age:0, life:0.9});
+  }
 
   function updateEffects(dt){
     for (let i=state.particles.length-1;i>=0;i--){
@@ -1238,8 +1352,9 @@
       p.age += dt;
       if (p.age >= p.life){ state.particles.splice(i,1); continue; }
       const d = Math.exp(-3.4 * dt);
-      p.vx *= d; p.vy *= d; p.vy += 42 * dt;
-      p.x += p.vx * dt; p.y += p.vy * dt;
+      p.vx *= d; p.vy *= d; p.vz *= d;
+      p.vy -= 4 * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
     }
     for (let i=state.ripples.length-1;i>=0;i--){
       const r = state.ripples[i]; r.age += dt;
@@ -1254,87 +1369,35 @@
   /* =========================================================
      SPAWN
      ========================================================= */
-  function randomPos(r, awayFromCamera, minFromCamera){
-    const pad = r + 26;
-    const minWorldX = cam.x - W/2 + pad;
-    const maxWorldX = cam.x + W/2 - pad;
-    const minWorldY = cam.y - H/2 + pad;
-    const maxWorldY = cam.y + H/2 - pad;
+  function pickScreenPos(minFromCenter, maxFromCenter, pad){
+    pad = pad || 80;
+    let bestSx = W/2, bestSy = H/2, bestDist = -Infinity;
+    for (let i = 0; i < 40; i++){
+      const sx = pad + Math.random() * Math.max(40, W - 2*pad);
+      const sy = pad + Math.random() * Math.max(40, H - 2*pad);
+      const d = Math.hypot(sx - W/2, sy - H/2);
+      if (d < minFromCenter) continue;
+      if (d > maxFromCenter) continue;
 
-    const minR = Math.max(0, minFromCamera || 0);
-
-    let best = { x: cam.x, y: cam.y }, bestScore = -Infinity;
-    for (let i=0;i<44;i++){
-      const x = minWorldX + Math.random()*(maxWorldX - minWorldX);
-      const y = minWorldY + Math.random()*(maxWorldY - minWorldY);
-
-      if (minR > 0){
-        const md = Math.hypot(cam.x - x, cam.y - y);
-        if (md < minR) continue;
+      let minExisting = Infinity;
+      for (const t of state.targets){
+        const p = project(t.x, t.y, t.z);
+        if (!p) continue;
+        minExisting = Math.min(minExisting, Math.hypot(p.x - sx, p.y - sy));
       }
+      if (!isFinite(minExisting)) minExisting = 9999;
 
-      let minD = Infinity;
-      for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-x, t.y-y) - t.r - r);
-      if (!isFinite(minD)) minD = 2000;
-
-      let s = minD;
-      if (awayFromCamera) s = Math.min(s, Math.hypot(cam.x-x, cam.y-y) * 0.45);
-      s += Math.random()*8;
-      if (s > bestScore){ bestScore = s; best = {x,y}; }
+      if (minExisting > bestDist){
+        bestDist = minExisting;
+        bestSx = sx;
+        bestSy = sy;
+      }
     }
-    return best;
+    return { x: bestSx, y: bestSy };
   }
 
-  function angleSpawnPos(r){
-    const pad = r + 30;
-    const maxDist = Math.min(W, H) * 0.42;
-
-    for (let i=0;i<24;i++){
-      const ang = Math.random() * Math.PI * 2;
-      const dist = maxDist * (0.55 + Math.random() * 0.45);
-      const wx = cam.x + Math.cos(ang) * dist;
-      const wy = cam.y + Math.sin(ang) * dist;
-
-      const sx = wx - cam.x, sy = wy - cam.y;
-      if (Math.abs(sx) > W/2 - pad || Math.abs(sy) > H/2 - pad) continue;
-      if (Math.hypot(sx, sy) < 200) continue;
-
-      let minD = Infinity;
-      for (const t of state.targets) minD = Math.min(minD, Math.hypot(t.x-wx, t.y-wy) - t.r - r);
-      if (minD > r * 1.2) return { x: wx, y: wy };
-    }
-    return randomPos(r, true, 200);
-  }
-
-  // Edge-biased spawn for recycle — outer 60-100% ring, never inside 55% of min half-size
-  function edgeSpawnPos(r) {
-    const pad = r + 26;
-    const halfW = W / 2 - pad;
-    const halfH = H / 2 - pad;
-    const minHalf = Math.min(halfW, halfH);
-    const innerR = minHalf * 0.55;
-
-    for (let i = 0; i < 50; i++) {
-      const ang = Math.random() * Math.PI * 2;
-      const t = 0.6 + Math.random() * 0.4;
-      const dist = innerR + (minHalf - innerR) * t;
-      const wx = cam.x + Math.cos(ang) * dist;
-      const wy = cam.y + Math.sin(ang) * dist;
-
-      if (Math.abs(wx - cam.x) > halfW - 4) continue;
-      if (Math.abs(wy - cam.y) > halfH - 4) continue;
-      if (Math.hypot(wx - cam.x, wy - cam.y) < innerR) continue;
-
-      let ok = true;
-      for (const t2 of state.targets) {
-        const dx = t2.x - wx, dy = t2.y - wy;
-        const rr = r + t2.r + 4;
-        if (dx*dx + dy*dy < rr * rr) { ok = false; break; }
-      }
-      if (!ok) continue;
-      return { x: wx, y: wy };
-    }
-    return randomPos(r, true, innerR);
+  function pickDepth(){
+    return 8 + Math.random() * 12;
   }
 
   function spawnTargets(){
@@ -1344,9 +1407,9 @@
 
     if (cfg.trackingMode){
       if (state.targets.length < 1){
-        const r = cfg.radius;
-        const p = randomPos(r, false, 0);
-        state.targets.push(new Target(cfg, p.x, p.y, r, 0, move, "tracking"));
+        const depth = 12;
+        const sp = spawnAtScreen(W/2, H/2, depth);
+        state.targets.push(new Target(cfg, sp.x, sp.y, sp.z, cfg.radius, 0, move, "tracking"));
       }
       return;
     }
@@ -1361,64 +1424,95 @@
       if (pool.length === 0) pool.push("gridshot");
 
       let guard = 0;
-      while (state.targets.length < cfg.maxTargets && guard++ < 24){
+      while (state.targets.length < cfg.maxTargets && guard++ < 26){
         const pick = pool[Math.floor(Math.random() * pool.length)];
-        let r, life, moveProf, minFromCam = 0, useAngle = false;
+        let r, life, moveProf, minFromCenter = 180, useAngle = false;
 
         if (pick === "gridshot"){
-          r = 44; life = 0; moveProf = { type:"none", aggression:0 };
-          minFromCam = 180;
+          r = 0.55; life = 0; moveProf = { type:"none", aggression:0 };
         } else if (pick === "flick"){
-          r = 38; life = 0; moveProf = { type:"none", aggression:0 };
+          r = 0.5; life = 0; moveProf = { type:"none", aggression:0 };
           useAngle = true;
         } else if (pick === "precision"){
-          r = 20 * (0.85 + Math.random()*0.32);
+          r = 0.25 * (0.85 + Math.random()*0.32);
           life = 1.4 + Math.random()*1.6;
           moveProf = { type:"none", aggression:0 };
         } else {
-          r = 50; life = 0;
+          r = 0.6; life = 0;
           moveProf = { type:"orbital", aggression: s.moveSpeed || 0.9 };
         }
-
         if (s.moving && pick !== "tracking"){
           moveProf = { type:"strafe", aggression: s.moveSpeed };
         }
 
-        const p = useAngle ? angleSpawnPos(r) : randomPos(r, false, minFromCam);
+        const depth = pickDepth();
+        let sx, sy;
+        if (useAngle){
+          const ang = Math.random() * Math.PI * 2;
+          const maxR = Math.min(W, H) * 0.42;
+          const dist = 220 + Math.random() * (maxR - 220);
+          sx = W/2 + Math.cos(ang) * dist;
+          sy = H/2 + Math.sin(ang) * dist;
+          sx = clamp(sx, 60, W-60);
+          sy = clamp(sy, 60, H-60);
+        } else {
+          const p = pickScreenPos(minFromCenter, Math.min(W, H) * 0.55);
+          sx = p.x; sy = p.y;
+        }
+
+        const w = spawnAtScreen(sx, sy, depth);
 
         let tooClose = false;
-        for (const t of state.targets) if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 4) tooClose = true;
+        for (const t of state.targets){
+          if (Math.hypot(t.x-w.x, t.y-w.y, t.z-w.z) < r + t.r + 0.5) tooClose = true;
+        }
         if (tooClose) continue;
 
-        state.targets.push(new Target(cfg, p.x, p.y, r, life, moveProf, pick));
+        state.targets.push(new Target(cfg, w.x, w.y, w.z, r, life, moveProf, pick));
       }
       return;
     }
 
     let guard = 0;
-    while (state.targets.length < cfg.maxTargets && guard++ < 20){
-      let r, life = 0, p;
+    while (state.targets.length < cfg.maxTargets && guard++ < 24){
+      let r, life = 0, sx, sy;
 
       if (cfg.id === "precision"){
         r = cfg.radius * (0.85 + Math.random()*0.32);
         life = 1.4 + Math.random() * 1.6;
-        p = randomPos(r, true, 150);
       } else if (cfg.id === "flick"){
         r = cfg.radius;
-        p = angleSpawnPos(r);
       } else if (cfg.id === "gridshot"){
         r = cfg.radius;
-        p = randomPos(r, false, cfg.minFromCamera);
       } else {
         r = cfg.radius;
-        p = randomPos(r, cfg.maxTargets === 1);
       }
 
+      const depth = pickDepth();
+
+      if (cfg.angleSpawn){
+        const ang = Math.random() * Math.PI * 2;
+        const maxR = Math.min(W, H) * 0.42;
+        const dist = 200 + Math.random() * (maxR - 200);
+        sx = W/2 + Math.cos(ang) * dist;
+        sy = H/2 + Math.sin(ang) * dist;
+        sx = clamp(sx, 60, W-60);
+        sy = clamp(sy, 60, H-60);
+      } else {
+        const minFromCenter = cfg.minScreenFromCenter || 120;
+        const p = pickScreenPos(minFromCenter, Math.min(W, H) * 0.55);
+        sx = p.x; sy = p.y;
+      }
+
+      const w = spawnAtScreen(sx, sy, depth);
+
       let tooClose = false;
-      for (const t of state.targets) if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 4) tooClose = true;
+      for (const t of state.targets){
+        if (Math.hypot(t.x-w.x, t.y-w.y, t.z-w.z) < r + t.r + 0.5) tooClose = true;
+      }
       if (tooClose) continue;
 
-      state.targets.push(new Target(cfg, p.x, p.y, r, life, move, cfg.id));
+      state.targets.push(new Target(cfg, w.x, w.y, w.z, r, life, move, cfg.id));
     }
   }
 
@@ -1433,13 +1527,13 @@
     }
 
     let moveProf = state.movement;
-    let minFromCam = cfg.minFromCamera || 0;
+    let minFromCenter = cfg.minScreenFromCenter || 120;
     let useAngle = false;
 
     if (cfg.combinedMode){
       const pick = oldTarget.style;
       if (pick === "gridshot"){
-        minFromCam = 180; moveProf = { type:"none", aggression:0 };
+        minFromCenter = 180; moveProf = { type:"none", aggression:0 };
       } else if (pick === "flick"){
         useAngle = true; moveProf = { type:"none", aggression:0 };
       } else if (pick === "precision"){
@@ -1452,19 +1546,48 @@
       }
     }
 
-    const p = useAngle ? angleSpawnPos(r)
-            : (edgeBiased ? edgeSpawnPos(r) : randomPos(r, false, minFromCam));
+    const depth = pickDepth();
+    let sx, sy;
+    if (useAngle){
+      const ang = Math.random() * Math.PI * 2;
+      const maxR = Math.min(W, H) * 0.42;
+      const dist = 200 + Math.random() * (maxR - 200);
+      sx = W/2 + Math.cos(ang) * dist;
+      sy = H/2 + Math.sin(ang) * dist;
+      sx = clamp(sx, 60, W-60);
+      sy = clamp(sy, 60, H-60);
+    } else if (edgeBiased){
+      const maxR = Math.min(W, H) * 0.5;
+      for (let i = 0; i < 30; i++){
+        const ang = Math.random() * Math.PI * 2;
+        const dist = maxR * (0.55 + Math.random() * 0.35);
+        const testSx = W/2 + Math.cos(ang) * dist;
+        const testSy = H/2 + Math.sin(ang) * dist;
+        if (testSx > 80 && testSx < W-80 && testSy > 80 && testSy < H-80){
+          sx = testSx; sy = testSy;
+          break;
+        }
+      }
+      if (sx === undefined){
+        const p = pickScreenPos(minFromCenter, Math.min(W,H)*0.55);
+        sx = p.x; sy = p.y;
+      }
+    } else {
+      const p = pickScreenPos(minFromCenter, Math.min(W, H) * 0.55);
+      sx = p.x; sy = p.y;
+    }
+
+    const w = spawnAtScreen(sx, sy, depth);
 
     for (const t of state.targets){
-      if (Math.hypot(t.x-p.x, t.y-p.y) < r + t.r + 2){
-        const retryX = clamp(p.x + (Math.random()-0.5)*W*0.4, cam.x - W/2 + r + 26, cam.x + W/2 - r - 26);
-        const retryY = clamp(p.y + (Math.random()-0.5)*H*0.4, cam.y - H/2 + r + 26, cam.y + H/2 - r - 26);
-        state.targets.push(new Target(cfg, retryX, retryY, r, life, moveProf, oldTarget.style));
+      if (Math.hypot(t.x-w.x, t.y-w.y, t.z-w.z) < r + t.r + 0.3){
+        const p2 = pickScreenPos(minFromCenter, Math.min(W,H)*0.55);
+        const w2 = spawnAtScreen(p2.x, p2.y, depth);
+        state.targets.push(new Target(cfg, w2.x, w2.y, w2.z, r, life, moveProf, oldTarget.style));
         return;
       }
     }
-
-    state.targets.push(new Target(cfg, p.x, p.y, r, life, moveProf, oldTarget.style));
+    state.targets.push(new Target(cfg, w.x, w.y, w.z, r, life, moveProf, oldTarget.style));
   }
 
   function recycleOffscreenTargets(){
@@ -1473,8 +1596,7 @@
 
     let inView = 0;
     for (const t of state.targets){
-      const sx = t.x - cam.x, sy = t.y - cam.y;
-      if (Math.abs(sx) < W/2 + t.r && Math.abs(sy) < H/2 + t.r) inView++;
+      if (isInView(t.x, t.y, t.z, 1.15)) inView++;
     }
 
     const forceImmediate = (cfg.maxTargets || 1) > 1 && inView === 0 && state.targets.length > 0;
@@ -1489,8 +1611,19 @@
   }
 
   /* =========================================================
-     HIT / MISS
+     HIT DETECTION
      ========================================================= */
+  function tryHitTarget(t, hitScaleOverride){
+    const p = project(t.x, t.y, t.z);
+    if (!p) return false;
+    const hitScale = hitScaleOverride !== undefined ? hitScaleOverride : state.lockedSettings.hitScale;
+    const screenR = t.radius * p.scale * hitScale;
+    const dx = p.x - W/2;
+    const dy = p.y - H/2;
+    if (dx*dx + dy*dy <= screenR * screenR) return true;
+    return false;
+  }
+
   function hitTarget(t){
     const cfg = MODES[state.mode];
     const ls = state.lockedSettings;
@@ -1515,9 +1648,9 @@
     const gained = Math.round(basePoints * mult);
     state.score += gained;
 
-    burst(t.x, t.y, cfg.color, t.radius);
-    addRipple(t.x, t.y, cfg.color, t.radius * 2.3, 0.45);
-    addFloater(t.x, t.y - t.radius*0.4, "+" + gained, cfg.color);
+    burst(t.x, t.y, t.z, cfg.color, t.radius);
+    addRipple(t.x, t.y, t.z, cfg.color, t.radius * 2.3, 0.5);
+    addFloater(t.x, t.y + t.radius * 1.5, t.z, "+" + gained, cfg.color);
 
     state.shake = Math.min(state.shake + 5, 12);
     state.hitMarker = 0.16; state.crossKick = 1;
@@ -1528,12 +1661,17 @@
     if (i >= 0) state.targets.splice(i,1);
   }
 
-  function missShot(x,y){
+  function missShot(){
     state.misses++; state.streak = 0;
-    addRipple(x,y,"#ff3b5c",26,0.4);
     state.shake = Math.min(state.shake + 2.5, 9);
     state.crossKick = 0.7; state.recoil = 0.55; state.muzzle = 0.05;
     SFX.miss();
+    const fwd = {
+      x: Math.sin(state.yaw) * Math.cos(state.pitch),
+      y: Math.sin(state.pitch),
+      z: Math.cos(state.yaw) * Math.cos(state.pitch),
+    };
+    addRipple(fwd.x * 8, fwd.y * 8, fwd.z * 8, "#ff3b5c", 0.3, 0.4);
   }
 
   function shoot(){
@@ -1554,12 +1692,20 @@
     if (!consumeAmmo()) return;
     if (a.enabled && w.boltTime > 0){ a.shotCooldown = w.boltTime; SFX.boltCycle(); }
 
-    for (let i=state.targets.length-1;i>=0;i--){
+    const candidates = [];
+    for (let i = state.targets.length-1;i>=0;i--){
       const t = state.targets[i];
-      const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ hitTarget(t); return; }
+      if (tryHitTarget(t)){
+        const p = project(t.x, t.y, t.z);
+        candidates.push({ t, depth: p.z });
+      }
     }
-    missShot(cam.x, cam.y);
+    if (candidates.length > 0){
+      candidates.sort((a,b) => a.depth - b.depth);
+      hitTarget(candidates[0].t);
+      return;
+    }
+    missShot();
   }
 
   /* =========================================================
@@ -1572,18 +1718,31 @@
     if (state.phase !== "playing") return;
     if (state.adsZoom < 1.05) return;
 
-    let best = null, bestD = Infinity;
+    let best = null, bestAngle = Infinity;
     for (const t of state.targets){
-      const d = Math.hypot(t.x - cam.x, t.y - cam.y);
-      const snapR = t.radius + 65;
-      if (d < snapR && d > 2 && d < bestD){ bestD = d; best = t; }
+      const c = worldToCamera(t.x, t.y, t.z);
+      if (c.z < 0.5) continue;
+      const angularRadius = Math.atan2(t.radius, c.z);
+      const targetAngle = Math.atan2(Math.hypot(c.x, c.y), c.z);
+      const snapAngle = angularRadius + 5 * Math.PI / 180;
+      if (targetAngle < snapAngle && targetAngle < bestAngle){
+        bestAngle = targetAngle;
+        best = t;
+      }
     }
     if (!best) return;
 
     state.assistTarget = best;
+    const d = Math.hypot(best.x, best.y, best.z);
+    const desiredYaw = Math.atan2(best.x, best.z);
+    const desiredPitch = Math.asin(clamp(best.y / d, -1, 1));
+
     const k = 1 - Math.exp(-4.5 * dt);
-    cam.x += (best.x - cam.x) * k;
-    cam.y += (best.y - cam.y) * k;
+    let yawDiff = desiredYaw - state.yaw;
+    while (yawDiff > Math.PI) yawDiff -= 2 * Math.PI;
+    while (yawDiff < -Math.PI) yawDiff += 2 * Math.PI;
+    state.yaw += yawDiff * k;
+    state.pitch += (desiredPitch - state.pitch) * k;
   }
 
   /* =========================================================
@@ -1595,13 +1754,18 @@
     const t = state.targets[0];
     if (!t) return;
 
-    const lockR = t.radius * ls.hitScale * cfg.lockRadiusFactor;
-    const d = Math.hypot(t.x - cam.x, t.y - cam.y);
+    const p = project(t.x, t.y, t.z);
+    if (!p){ t.locked = false; return; }
+
+    const screenR = t.radius * p.scale * ls.hitScale;
+    const lockR = screenR * cfg.lockRadiusFactor;
+    const dx = p.x - W/2, dy = p.y - H/2;
+    const screenDist = Math.hypot(dx, dy);
     const a = state.ammo;
     const w = WEAPONS.ar;
 
     const canFire = !a.enabled || (!a.reloading && a.shotCooldown <= 0 && a.inMag > 0);
-    const inLock = mouseDown && d <= lockR && canFire;
+    const inLock = mouseDown && screenDist <= lockR && canFire;
 
     if (inLock){
       state.lockMeter = Math.min(1, state.lockMeter + dt * 0.85);
@@ -1612,7 +1776,6 @@
       state.muzzle = Math.max(state.muzzle, 0.022 + Math.random() * 0.022);
       state.recoil = Math.max(state.recoil, 0.14 + Math.random() * 0.08);
 
-      // AR always fires at cadence while locked. Recoil is independent of ammo setting.
       a.shotCooldown -= dt;
       if (a.shotCooldown <= 0){
         a.shotCooldown = w.fireRate;
@@ -1628,10 +1791,14 @@
         const aa = Math.random() * Math.PI * 2;
         const rr = t.radius * (0.3 + Math.random() * 0.7);
         state.particles.push({
-          x: t.x + Math.cos(aa)*rr, y: t.y + Math.sin(aa)*rr,
-          vx:(Math.random()-0.5)*60, vy:-40 - Math.random()*60,
+          x: t.x + Math.cos(aa) * rr,
+          y: t.y + Math.sin(aa) * rr,
+          z: t.z,
+          vx: (Math.random()-0.5) * 2,
+          vy: -1 - Math.random()*2,
+          vz: (Math.random()-0.5) * 2,
           age:0, life:0.35 + Math.random()*0.3,
-          size:1 + Math.random()*2, color:cfg.color,
+          size: 1 + Math.random()*2, color: cfg.color,
         });
       }
     } else {
@@ -1682,16 +1849,12 @@
     state.goFlash = 0; state.recoil = 0; state.muzzle = 0;
     state.ads = false; state.adsZoom = 1;
     state.assistTarget = null;
+    state.yaw = 0; state.pitch = 0;
 
     state.camRecoil.active = false;
-    state.camRecoil.climbY = 0;
     state.camRecoil.timeSinceShot = 999;
 
-    cam.x = 0; cam.y = 0;
     mouseVel.x = 0; mouseVel.y = 0;
-
-    const gax = W - 90, gay = H - 70;
-    state.gunAngle = Math.atan2(H/2 - gay, W/2 - gax);
 
     initAmmo();
 
@@ -1713,6 +1876,7 @@
 
     if (mobileBypass) startTouchWatch();
 
+    updateCamCache();
     SFX.init(); SFX.tick(); updateHUD();
     updateAmmoHUD();
     tryLock();
@@ -1893,7 +2057,7 @@
     if (settings.calibration.enabled) {
       sensSub.textContent = `Applied on top of ${settings.calibration.cmPer360}cm/360 calibration`;
     } else {
-      sensSub.textContent = `Raw pixels-per-count multiplier`;
+      sensSub.textContent = `Raw radians-per-count multiplier`;
     }
 
     shootKeyBtn.textContent = keyLabel(settings.shootKey);
@@ -1985,24 +2149,22 @@
   dpiInput.addEventListener("input", () => {
     let v = parseInt(dpiInput.value, 10);
     if (isNaN(v)) v = 800;
-    v = clamp(v, 100, 32000);
-    settings.calibration.dpi = v;
+    settings.calibration.dpi = clamp(v, 100, 32000);
   });
   dpiInput.addEventListener("blur", () => { dpiInput.value = settings.calibration.dpi; });
 
   cmInput.addEventListener("input", () => {
     let v = parseFloat(cmInput.value);
     if (isNaN(v)) v = 30;
-    v = clamp(v, 5, 120);
-    settings.calibration.cmPer360 = v;
+    settings.calibration.cmPer360 = clamp(v, 5, 120);
   });
   cmInput.addEventListener("blur", () => { cmInput.value = settings.calibration.cmPer360; });
 
   fovInput.addEventListener("input", () => {
     let v = parseInt(fovInput.value, 10);
     if (isNaN(v)) v = 103;
-    v = clamp(v, 60, 130);
-    settings.calibration.fov = v;
+    settings.calibration.fov = clamp(v, 60, 130);
+    updateFovCache();
   });
   fovInput.addEventListener("blur", () => { fovInput.value = settings.calibration.fov; });
 
@@ -2200,7 +2362,7 @@
         items.push(["Reloads", String(a.reloads), false]);
         items.push(["Dry Fires", String(a.emptyClicks), false]);
       }
-      items.push(["Score / sec", Math.round(score / cfg.duration), false]);
+      items.push(["Score / sec", Math.round(score / state.duration), false]);
     }
 
     resGrid.innerHTML = items.map(([label, value, accent]) =>
@@ -2246,13 +2408,11 @@
     const vDecay = Math.exp(-9 * dt);
     mouseVel.x *= vDecay; mouseVel.y *= vDecay;
 
-    // Aim recoil burst-reset
     const cr = state.camRecoil;
     if (cr.active) {
       cr.timeSinceShot += dt;
       if (cr.timeSinceShot > RECOIL.burstResetDelay) {
         cr.active = false;
-        cr.climbY = 0;
       }
     }
 
@@ -2267,13 +2427,6 @@
     state.adsZoom += (targetZoom - state.adsZoom) * (1 - Math.exp(-14 * dt));
 
     updateEffects(dt);
-
-    if (state.phase === "playing" || state.phase === "countdown"){
-      const gax = W - 90, gay = H - 70;
-      const target = Math.atan2(H/2 - gay, W/2 - gax);
-      const diff = angleDiff(state.gunAngle, target);
-      state.gunAngle += diff * (1 - Math.exp(-30 * dt));
-    }
 
     if (state.phase === "countdown"){
       const prev = Math.ceil(state.countdown);
@@ -2316,7 +2469,7 @@
       if (t.expired){
         state.targets.splice(i,1);
         state.misses++; state.streak = 0;
-        addRipple(t.x, t.y, "#ff3b5c", t.radius*2.4, 0.42);
+        addRipple(t.x, t.y, t.z, "#ff3b5c", t.radius * 2.4, 0.42);
         SFX.expire();
       }
     }
@@ -2330,18 +2483,78 @@
   /* =========================================================
      RENDER
      ========================================================= */
-  function drawTrail(t){
-    if (!t.trail.length) return;
-    const col = t.cfg.color;
-    for (let i=0;i<t.trail.length;i++){
-      const p = t.trail[i];
-      const k = 1 - p.age / p.life;
-      const alpha = k * 0.22 * (i / t.trail.length);
-      ctx.fillStyle = hexA(col, alpha);
+  function drawSkyAndGround(){
+    const horizonY = H/2 + Math.tan(state.pitch) * screenScale;
+    const hY = clamp(horizonY, -H, 2*H);
+
+    const skyGrad = ctx.createLinearGradient(0, -H, 0, hY);
+    skyGrad.addColorStop(0, "#050812");
+    skyGrad.addColorStop(0.6, "#0a0f1c");
+    skyGrad.addColorStop(1, "#101724");
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, -H, W, hY + H);
+
+    const groundGrad = ctx.createLinearGradient(0, hY, 0, H + 100);
+    groundGrad.addColorStop(0, "#0a0e17");
+    groundGrad.addColorStop(0.3, "#070a11");
+    groundGrad.addColorStop(1, "#030408");
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(0, hY, W, H - hY + 100);
+
+    if (hY >= 0 && hY <= H){
+      ctx.strokeStyle = "rgba(56,189,248,0.16)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * (0.55 + 0.4 * k), 0, Math.PI*2);
-      ctx.fill();
+      ctx.moveTo(0, hY);
+      ctx.lineTo(W, hY);
+      ctx.stroke();
     }
+  }
+
+  function drawGroundGrid(){
+    const gridY = -1.7;
+    const extent = 30;
+    const spacing = 2;
+    const NEAR = 0.2;
+
+    ctx.strokeStyle = "rgba(80,140,200,0.10)";
+    ctx.lineWidth = 1;
+
+    for (let z = -extent; z <= extent; z += spacing){
+      draw3DLine(-extent, gridY, z, extent, gridY, z, NEAR);
+    }
+    for (let x = -extent; x <= extent; x += spacing){
+      draw3DLine(x, gridY, -extent, x, gridY, extent, NEAR);
+    }
+  }
+
+  function draw3DLine(wx1, wy1, wz1, wx2, wy2, wz2, NEAR){
+    const c1 = worldToCamera(wx1, wy1, wz1);
+    const c2 = worldToCamera(wx2, wy2, wz2);
+
+    if (c1.z < NEAR && c2.z < NEAR) return;
+
+    let a = c1, b = c2;
+    if (c1.z < NEAR){
+      const t = (NEAR - c1.z) / (c2.z - c1.z);
+      a = { x: c1.x + (c2.x - c1.x)*t, y: c1.y + (c2.y - c1.y)*t, z: NEAR };
+    } else if (c2.z < NEAR){
+      const t = (NEAR - c2.z) / (c1.z - c2.z);
+      b = { x: c2.x + (c1.x - c2.x)*t, y: c2.y + (c1.y - c2.y)*t, z: NEAR };
+    }
+
+    const pa = cameraToScreen(a.x, a.y, a.z);
+    const pb = cameraToScreen(b.x, b.y, b.z);
+
+    if (Math.max(pa.x, pb.x) < 0) return;
+    if (Math.min(pa.x, pb.x) > W) return;
+    if (Math.max(pa.y, pb.y) < 0) return;
+    if (Math.min(pa.y, pb.y) > H) return;
+
+    ctx.beginPath();
+    ctx.moveTo(pa.x, pa.y);
+    ctx.lineTo(pb.x, pb.y);
+    ctx.stroke();
   }
 
   function targetColors(t){
@@ -2356,19 +2569,46 @@
     return { col:t.cfg.color, col2:t.cfg.color2 };
   }
 
+  function drawTrail(t){
+    if (!t.trail.length) return;
+    const { col } = targetColors(t);
+    for (let i=0;i<t.trail.length;i++){
+      const p = t.trail[i];
+      const proj = project(p.x, p.y, p.z, 0.2);
+      if (!proj) continue;
+      const k = 1 - p.age / p.life;
+      const alpha = k * 0.22 * (i / t.trail.length);
+      const screenR = p.r * proj.scale * 0.85;
+      if (screenR < 0.5) continue;
+      ctx.fillStyle = hexA(col, alpha);
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, screenR, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
   function drawTarget(t){
-    const R = t.radius;
-    if (R <= 0.6) return;
+    const p = project(t.x, t.y, t.z, 0.2);
+    if (!p) return;
+    const screenR = t.radius * p.scale;
+    if (screenR < 0.6) return;
+
     const cfg = t.cfg;
     const ls = state.lockedSettings;
     const { col, col2 } = targetColors(t);
 
     drawTrail(t);
+
+    const depthAlpha = clamp(1.15 - p.z / 40, 0.55, 1);
+
     ctx.save();
-    ctx.translate(t.x, t.y);
+    ctx.globalAlpha = depthAlpha;
+    ctx.translate(p.x, p.y);
+
+    const R = screenR;
 
     const glow = ctx.createRadialGradient(0,0,R*0.45,0,0,R*2.3);
-    glow.addColorStop(0, hexA(col, 0.32));
+    glow.addColorStop(0, hexA(col, 0.30));
     glow.addColorStop(1, hexA(col, 0));
     ctx.fillStyle = glow;
     ctx.beginPath();
@@ -2379,7 +2619,7 @@
       ctx.save();
       ctx.setLineDash([3,4]);
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(251,191,36,0.7)";
+      ctx.strokeStyle = "rgba(251,191,36,0.75)";
       ctx.shadowColor = "rgba(251,191,36,0.6)";
       ctx.shadowBlur = 10;
       ctx.beginPath();
@@ -2435,23 +2675,25 @@
     ctx.fillStyle = g;
     ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill();
 
-    const rimW = Math.max(1.4, R * 0.062);
+    const rimW = Math.max(1.2, R * 0.062);
     ctx.lineWidth = rimW;
     ctx.strokeStyle = hexA("#ffffff", 0.5);
     ctx.beginPath(); ctx.arc(0,0,R - rimW/2, 0, Math.PI*2); ctx.stroke();
 
-    ctx.lineWidth = Math.max(1, R * 0.045);
-    ctx.strokeStyle = hexA("#ffffff", 0.32);
-    ctx.beginPath(); ctx.arc(0,0,R*0.61,0,Math.PI*2); ctx.stroke();
+    if (R > 8){
+      ctx.lineWidth = Math.max(1, R * 0.045);
+      ctx.strokeStyle = hexA("#ffffff", 0.32);
+      ctx.beginPath(); ctx.arc(0,0,R*0.61,0,Math.PI*2); ctx.stroke();
 
-    ctx.fillStyle = hexA("#ffffff", 0.92);
-    ctx.beginPath(); ctx.arc(0,0,Math.max(1.4, R*0.135),0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = hexA("#ffffff", 0.92);
+      ctx.beginPath(); ctx.arc(0,0,Math.max(1.4, R*0.135),0,Math.PI*2); ctx.fill();
+    }
 
     if (!cfg.trackingMode && Math.abs(ls.hitScale - 1) > 0.02){
       ctx.save();
       ctx.setLineDash([4,5]);
       ctx.lineWidth = 1.6;
-      ctx.strokeStyle = "rgba(255,255,255,0.4)";
+      ctx.strokeStyle = "rgba(255,255,255,0.42)";
       ctx.beginPath(); ctx.arc(0, 0, R * ls.hitScale, 0, Math.PI*2); ctx.stroke();
       ctx.restore();
     }
@@ -2466,63 +2708,51 @@
       ctx.stroke();
       ctx.lineCap = "butt";
     }
+
     ctx.restore();
   }
 
   function drawEffects(){
-    for (const r of state.ripples){
-      const p = r.age / r.life;
-      const rad = r.maxR * (1 - Math.pow(1-p, 2.6));
-      ctx.globalAlpha = (1-p) * 0.85;
-      ctx.strokeStyle = r.color;
-      ctx.lineWidth = 3.2*(1-p) + 0.4;
-      ctx.beginPath(); ctx.arc(r.x, r.y, rad, 0, Math.PI*2); ctx.stroke();
+    for (const p of state.particles){
+      const proj = project(p.x, p.y, p.z, 0.15);
+      if (!proj) continue;
+      const t = p.age / p.life;
+      const size = p.size * proj.scale * 0.02;
+      if (size < 0.5) continue;
+      ctx.globalAlpha = 1 - t*t;
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(proj.x, proj.y, size, 0, Math.PI*2); ctx.fill();
     }
     ctx.globalAlpha = 1;
 
-    for (const p of state.particles){
-      const t = p.age / p.life;
-      ctx.globalAlpha = 1 - t*t;
-      ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size*(1 - t*0.55), 0, Math.PI*2); ctx.fill();
+    for (const r of state.ripples){
+      const proj = project(r.x, r.y, r.z, 0.15);
+      if (!proj) continue;
+      const frac = r.age / r.life;
+      const screenR = r.worldR * proj.scale * (1 - Math.pow(1-frac, 2.6));
+      if (screenR < 0.5) continue;
+      ctx.globalAlpha = (1-frac) * 0.85;
+      ctx.strokeStyle = r.color;
+      ctx.lineWidth = 3.2*(1-frac) + 0.4;
+      ctx.beginPath(); ctx.arc(proj.x, proj.y, screenR, 0, Math.PI*2); ctx.stroke();
     }
     ctx.globalAlpha = 1;
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     for (const f of state.floaters){
-      const p = f.age / f.life;
-      ctx.globalAlpha = 1 - p*p;
+      const proj = project(f.x, f.y, f.z, 0.15);
+      if (!proj) continue;
+      const frac = f.age / f.life;
+      ctx.globalAlpha = 1 - frac * frac;
       ctx.fillStyle = f.color;
-      ctx.font = "700 21px ui-sans-serif, system-ui, -apple-system, sans-serif";
+      const fontSize = clamp(14 * proj.scale * 0.02, 11, 28);
+      ctx.font = `700 ${fontSize}px ui-sans-serif, system-ui, -apple-system, sans-serif`;
       ctx.shadowColor = f.color; ctx.shadowBlur = 16;
-      ctx.fillText(f.text, f.x, f.y - p*46);
+      ctx.fillText(f.text, proj.x, proj.y - frac * 46);
       ctx.shadowBlur = 0;
     }
     ctx.globalAlpha = 1;
-  }
-
-  function drawGrid(){
-    const step = 46;
-    const camGridX = Math.floor(cam.x / step) * step;
-    const camGridY = Math.floor(cam.y / step) * step;
-    const rangeX = Math.ceil(W / step / 2) + 2;
-    const rangeY = Math.ceil(H / step / 2) + 2;
-
-    ctx.strokeStyle = "rgba(255,255,255,0.026)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = -rangeX; i <= rangeX; i++){
-      const x = camGridX + i * step;
-      ctx.moveTo(x, cam.y - H/2 - step);
-      ctx.lineTo(x, cam.y + H/2 + step);
-    }
-    for (let j = -rangeY; j <= rangeY; j++){
-      const y = camGridY + j * step;
-      ctx.moveTo(cam.x - W/2 - step, y);
-      ctx.lineTo(cam.x + W/2 + step, y);
-    }
-    ctx.stroke();
   }
 
   function drawCrosshair(){
@@ -2533,11 +2763,14 @@
 
     let onTarget = false, inLock = false;
     for (const t of state.targets){
-      const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ onTarget = true; break; }
+      const p = project(t.x, t.y, t.z, 0.2);
+      if (!p) continue;
+      const hitR = t.radius * p.scale * ls.hitScale;
+      const d = Math.hypot(p.x - x, p.y - y);
+      if (d <= hitR){ onTarget = true; break; }
       if (t.cfg.trackingMode && mouseDown){
-        const lockR = t.radius * ls.hitScale * t.cfg.lockRadiusFactor;
-        if (Math.hypot(t.x - cam.x, t.y - cam.y) <= lockR) inLock = true;
+        const lockR = t.radius * p.scale * ls.hitScale * t.cfg.lockRadiusFactor;
+        if (d <= lockR) inLock = true;
       }
     }
 
@@ -2707,14 +2940,14 @@
     if (isSniper && state.adsZoom > 1.6) return;
 
     const anchorX = W - 90, anchorY = H - 70;
-    const angle = state.gunAngle || 0;
-    const cos = Math.cos(angle), sin = Math.sin(angle);
+    const baseAngle = Math.atan2(H/2 - anchorY, W/2 - anchorX);
     const svx = clamp(mouseVel.x, -30, 30) * 0.08;
     const svy = clamp(mouseVel.y, -30, 30) * 0.08;
     const t = performance.now() / 1000;
     const breathe = Math.sin(t * 1.6) * 1.4;
     const kick = state.recoil * (isAR ? 8 : 22);
-    const rkx = -cos * kick, rky = -sin * kick;
+    const rkx = -Math.cos(baseAngle) * kick;
+    const rky = -Math.sin(baseAngle) * kick;
 
     let reloadDrop = 0;
     if (state.ammo.enabled && state.ammo.reloading){
@@ -2724,7 +2957,7 @@
 
     ctx.save();
     ctx.translate(anchorX + rkx - svx + breathe, anchorY + rky - svy + reloadDrop);
-    ctx.rotate(angle + state.recoil * (isAR ? 0.04 : 0.06) + (reloadDrop > 5 ? 0.35 : 0));
+    ctx.rotate(baseAngle + state.recoil * (isAR ? 0.04 : 0.06) + (reloadDrop > 5 ? 0.35 : 0));
 
     ctx.shadowColor = "rgba(0,0,0,0.55)";
     ctx.shadowBlur = 18;
@@ -2844,11 +3077,14 @@
     const ls = state.lockedSettings;
     let onTarget = false, inLock = false;
     for (const t of state.targets){
-      const hitR = t.radius * ls.hitScale;
-      if (Math.hypot(t.x - cam.x, t.y - cam.y) <= hitR){ onTarget = true; break; }
+      const p = project(t.x, t.y, t.z, 0.2);
+      if (!p) continue;
+      const hitR = t.radius * p.scale * ls.hitScale;
+      const d = Math.hypot(p.x - cx, p.y - cy);
+      if (d <= hitR){ onTarget = true; break; }
       if (t.cfg.trackingMode && mouseDown){
-        const lockR = t.radius * ls.hitScale * t.cfg.lockRadiusFactor;
-        if (Math.hypot(t.x - cam.x, t.y - cam.y) <= lockR) inLock = true;
+        const lockR = t.radius * p.scale * ls.hitScale * t.cfg.lockRadiusFactor;
+        if (d <= lockR) inLock = true;
       }
     }
     const a = state.ammo;
@@ -2926,23 +3162,23 @@
   function render(){
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    ctx.drawImage(bgCanvas, 0, 0, W, H);
 
     ctx.save();
-    ctx.translate(W/2 - cam.x, H/2 - cam.y);
-
-    if (state.adsZoom > 1.001){
-      ctx.translate(cam.x, cam.y);
-      ctx.scale(state.adsZoom, state.adsZoom);
-      ctx.translate(-cam.x, -cam.y);
-    }
     if (state.shake > 0.1){
       ctx.translate((Math.random()-0.5)*state.shake, (Math.random()-0.5)*state.shake);
     }
 
-    drawGrid();
-    for (const t of state.targets) drawTarget(t);
+    drawSkyAndGround();
+    drawGroundGrid();
+
+    const drawList = state.targets.slice().sort((a, b) => {
+      const ca = worldToCamera(a.x, a.y, a.z);
+      const cb = worldToCamera(b.x, b.y, b.z);
+      return cb.z - ca.z;
+    });
+    for (const t of drawList) drawTarget(t);
     drawEffects();
+
     ctx.restore();
 
     if (state.lockFlash > 0){
@@ -2964,9 +3200,11 @@
     }
 
     drawWeapon();
+
     if (state.phase === "playing" || state.phase === "countdown"){
       if (state.adsZoom < 1.4) drawCrosshair();
     }
+
     drawScope();
 
     if (state.phase === "playing" && MODES[state.mode].weapon === "sniper" && !state.ads && state.adsZoom < 1.05){
@@ -3021,6 +3259,7 @@
     }
 
     update(dt);
+    updateCamCache();
     render();
     requestAnimationFrame(frame);
   }
@@ -3047,13 +3286,14 @@
     if (e.pointerType === "mouse") realMouseEvents++;
 
     if (pointerLocked){
-      const k = worldUnitsPerCount();
-      const dx = e.movementX * k;
-      const dy = e.movementY * k;
-      mouseVel.x += dx * 0.28;
-      mouseVel.y += dy * 0.28;
-      cam.x += dx;
-      cam.y += dy;
+      const k = radiansPerCount();
+      const dYaw = e.movementX * k;
+      const dPitch = -e.movementY * k;
+      state.yaw += dYaw;
+      state.pitch += dPitch;
+      state.pitch = clamp(state.pitch, -Math.PI/2 * 0.98, Math.PI/2 * 0.98);
+      mouseVel.x += dYaw * 40;
+      mouseVel.y += dPitch * 40;
     } else {
       const p = pointerPos(e);
       if (!haveLastPointer){
@@ -3064,11 +3304,10 @@
       if (state.phase === "playing"){
         const dx = p.x - lastPointerX;
         const dy = p.y - lastPointerY;
-        const k = 1.2 * settings.sensitivity * 0.35;
-        cam.x += dx * k;
-        cam.y += dy * k;
-        mouseVel.x += dx * k * 0.28;
-        mouseVel.y += dy * k * 0.28;
+        const k = 0.0016 * settings.sensitivity;
+        state.yaw += dx * k;
+        state.pitch -= dy * k;
+        state.pitch = clamp(state.pitch, -Math.PI/2 * 0.98, Math.PI/2 * 0.98);
       }
       lastPointerX = p.x; lastPointerY = p.y;
     }
@@ -3231,7 +3470,9 @@
   /* =========================================================
      BOOT
      ========================================================= */
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", () => {
+    resize();
+  });
   window.addEventListener("orientationchange", ()=> setTimeout(resize, 120));
 
   buildModeCards();
@@ -3240,10 +3481,16 @@
   updateDiffHint();
   resize();
 
-  if (detectMobile()){
-    showMobileBlock();
-    startTouchWatch();
+  let mobileChecked = false;
+  function checkMobileOnLaunch(){
+    if (mobileChecked) return;
+    mobileChecked = true;
+    if (detectMobile()){
+      showMobileBlock();
+      startTouchWatch();
+    }
   }
+  requestAnimationFrame(() => setTimeout(checkMobileOnLaunch, 60));
 
   requestAnimationFrame((t)=>{ lastT = t; lastRenderT = t; requestAnimationFrame(frame); });
 })();
