@@ -499,7 +499,6 @@
     resultsEl.classList.remove("show");
     hud.classList.remove("active");
 
-    // Clean up any prior rescue listener before attaching a new one
     if (rescueCleanup) { rescueCleanup(); rescueCleanup = null; }
 
     let rescueTimer = null;
@@ -963,7 +962,6 @@
     };
   }
 
-  // FIX 1: current screen scale accounts for ADS zoom
   function currentScreenScale() {
     return state.adsZoom > 1.01 ? screenScale * state.adsZoom : screenScale;
   }
@@ -989,7 +987,6 @@
     };
   }
 
-  // spawnAtScreen uses RAW screenScale — spawn positions are defined in hipfire coords
   function spawnAtScreen(sx, sy, depth) {
     const camX = (sx - W/2) * depth / screenScale;
     const camY = -(sy - H/2) * depth / screenScale;
@@ -1269,7 +1266,6 @@
       this.y += my * dt;
       this.z += mz * dt;
 
-      // FIX 2: soft-restore for strafe targets when they drift or go out of view
       const dist = Math.hypot(this.x, this.y, this.z);
       if (dist > 28 || !isInView(this.x, this.y, this.z, 1.5)) {
         const fy = Math.sin(state.pitch), fz = Math.cos(state.pitch);
@@ -1480,10 +1476,6 @@
       if (cfg.id === "precision"){
         r = cfg.radius * (0.85 + Math.random()*0.32);
         life = 1.4 + Math.random() * 1.6;
-      } else if (cfg.id === "flick"){
-        r = cfg.radius;
-      } else if (cfg.id === "gridshot"){
-        r = cfg.radius;
       } else {
         r = cfg.radius;
       }
@@ -2483,26 +2475,28 @@
   /* =========================================================
      RENDER
      ========================================================= */
+
+  // Darker sky/ground so targets pop. Grid no longer floods the screen.
   function drawSkyAndGround(){
     const horizonY = H/2 + Math.tan(state.pitch) * screenScale;
     const hY = clamp(horizonY, -H, 2*H);
 
     const skyGrad = ctx.createLinearGradient(0, -H, 0, hY);
-    skyGrad.addColorStop(0, "#050812");
-    skyGrad.addColorStop(0.6, "#0a0f1c");
-    skyGrad.addColorStop(1, "#101724");
+    skyGrad.addColorStop(0, "#03050a");
+    skyGrad.addColorStop(0.6, "#050912");
+    skyGrad.addColorStop(1, "#080d18");
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, -H, W, hY + H);
 
     const groundGrad = ctx.createLinearGradient(0, hY, 0, H + 100);
-    groundGrad.addColorStop(0, "#0a0e17");
-    groundGrad.addColorStop(0.3, "#070a11");
-    groundGrad.addColorStop(1, "#030408");
+    groundGrad.addColorStop(0, "#05080f");
+    groundGrad.addColorStop(0.3, "#030508");
+    groundGrad.addColorStop(1, "#010203");
     ctx.fillStyle = groundGrad;
     ctx.fillRect(0, hY, W, H - hY + 100);
 
     if (hY >= 0 && hY <= H){
-      ctx.strokeStyle = "rgba(56,189,248,0.16)";
+      ctx.strokeStyle = "rgba(56,189,248,0.22)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, hY);
@@ -2511,21 +2505,42 @@
     }
   }
 
+  // Distance-faded ground grid. Lines fade from 0.14 alpha at 2 units to
+  // 0 at 18 units, and are culled beyond 22 units. This prevents the grid
+  // from stacking up and shadowing targets.
   function drawGroundGrid(){
     const gridY = -1.7;
-    const extent = 30;
     const spacing = 2;
-    const NEAR = 0.2;
+    const NEAR = 0.3;
+    const EXTENT = 22;
+    const FADE_START = 2;
+    const FADE_END = 18;
 
-    ctx.strokeStyle = "rgba(80,140,200,0.10)";
-    ctx.lineWidth = 1;
+    // Lines parallel to X (constant Z)
+    for (let z = -EXTENT; z <= EXTENT; z += spacing){
+      const distAlong = Math.abs(z);
+      const alpha = gridAlpha(distAlong, FADE_START, FADE_END);
+      if (alpha < 0.005) continue;
+      ctx.strokeStyle = `rgba(80,140,200,${alpha})`;
+      ctx.lineWidth = 1;
+      draw3DLine(-EXTENT, gridY, z, EXTENT, gridY, z, NEAR);
+    }
+    // Lines parallel to Z (constant X)
+    for (let x = -EXTENT; x <= EXTENT; x += spacing){
+      const distAlong = Math.abs(x);
+      const alpha = gridAlpha(distAlong, FADE_START, FADE_END);
+      if (alpha < 0.005) continue;
+      ctx.strokeStyle = `rgba(80,140,200,${alpha})`;
+      ctx.lineWidth = 1;
+      draw3DLine(x, gridY, -EXTENT, x, gridY, EXTENT, NEAR);
+    }
+  }
 
-    for (let z = -extent; z <= extent; z += spacing){
-      draw3DLine(-extent, gridY, z, extent, gridY, z, NEAR);
-    }
-    for (let x = -extent; x <= extent; x += spacing){
-      draw3DLine(x, gridY, -extent, x, gridY, extent, NEAR);
-    }
+  function gridAlpha(dist, fadeStart, fadeEnd){
+    if (dist <= fadeStart) return 0.14;
+    if (dist >= fadeEnd) return 0;
+    const t = (dist - fadeStart) / (fadeEnd - fadeStart);
+    return 0.14 * (1 - t) * (1 - t);
   }
 
   function draw3DLine(wx1, wy1, wz1, wx2, wy2, wz2, NEAR){
