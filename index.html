@@ -3503,6 +3503,8 @@
     if (detectMobile()){
       showMobileBlock();
       startTouchWatch();
+    } else {
+      menuEl.classList.add("show");
     }
   }
   requestAnimationFrame(() => setTimeout(checkMobileOnLaunch, 60));
